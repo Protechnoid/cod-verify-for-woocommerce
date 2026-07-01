@@ -1,0 +1,9 @@
+#windows
+Thumbs.db
+desktop.ini
+
+#Logs
+*.log
+
+#Archives
+*.zip
