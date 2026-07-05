@@ -6,6 +6,7 @@ Description: Verify Cash on Delivery orders before processing to reduce fake and
 Version: 1.0.0
 Requires at least: 6.8
 Requires PHP: 8.0
+Requires Plugins: woocommerce
 Author: Protechnoid
 Author URI: https://protechnoid.com
 License: GPL v2 or later
@@ -27,7 +28,7 @@ define( 'COV_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); //Plugin identifie
 
  
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-plugin.php';
-require_once COV_PLUGIN_PATH . '/includes/compatibility/class-cov-compatibility.php';
+require_once COV_PLUGIN_PATH . '/includes/core/class-cov-loader.php';
 
 
 function cov_run_plugin() {

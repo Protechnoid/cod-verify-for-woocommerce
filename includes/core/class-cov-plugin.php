@@ -12,16 +12,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class COV_Plugin {
 
+    private COV_Loader $loader;
+
     public function run() {
 
-        $compatibility = new COV_Compatibility();
+        $this->loader = new COV_Loader();
 
-        if( !$compatibility->is_compatible() ) {
-            return;
-        }
+        $this->define_hooks();
+        
+        $this->loader->run();
 
-        // Plugin initialization will continue here.
     }
 
+    private function define_hooks() {
+
+    }  
 
 }

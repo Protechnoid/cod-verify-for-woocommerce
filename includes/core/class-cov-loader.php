@@ -15,6 +15,13 @@ class COV_Loader {
 
     public function run() {
 
+        foreach ( $this->actions as $action ) {
+            add_action(
+                $action['hook'], 
+                array( $action['component'], $action['callback'] ) 
+            );
+        }
+
     }
 
     public function add_action( $hook, $component, $callback ) {
@@ -24,6 +31,6 @@ class COV_Loader {
                 'component' => $component,
                 'callback'  => $callback,
         );
-    }
+    } 
 
 }
