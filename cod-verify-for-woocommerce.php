@@ -19,16 +19,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } 
 
-//Constants
+// Constants
 
 define( 'COV_VERSION', '1.0.0' ); 
-define( 'COV_PLUGIN_PATH', plugin_dir_path( __FILE__ ) ); //Filesystem path
-define( 'COV_PLUGIN_URL', plugin_dir_url( __FILE__ ) ); //Browser URL
-define( 'COV_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); //Plugin identifier
-
+define( 'COV_PLUGIN_FILE', __FILE__ );
+define( 'COV_PLUGIN_PATH', plugin_dir_path( COV_PLUGIN_FILE ) ); //Filesystem path
+define( 'COV_PLUGIN_URL', plugin_dir_url( COV_PLUGIN_FILE ) ); //Browser URL
+define( 'COV_PLUGIN_BASENAME', plugin_basename( COV_PLUGIN_FILE ) ); //Plugin identifier
  
+
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-plugin.php';
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-loader.php';
+require_once COV_PLUGIN_PATH . '/includes/core/class-cov-activator.php';
+require_once COV_PLUGIN_PATH . '/includes/core/class-cov-deactivator.php';
+
+
+register_activation_hook( COV_PLUGIN_FILE, array( 'COV_Activator', 'activate' ) );
+register_deactivation_hook( COV_PLUGIN_FILE, array( 'COV_Deactivator', 'deactivate' ) );
 
 
 function cov_run_plugin() {
