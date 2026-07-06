@@ -12,7 +12,7 @@
  class COV_Deactivator {
 
     public static function deactivate() {
-        error_log( 'COV deactivated.' );
+      
     }
 
  }

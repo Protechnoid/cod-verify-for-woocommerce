@@ -12,7 +12,7 @@
  class COV_Activator {
 
     public static function activate() {
-        error_log( 'COV activated.' );
+      
     }
 
  }
