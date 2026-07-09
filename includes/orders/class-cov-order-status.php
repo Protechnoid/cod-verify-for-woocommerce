@@ -15,19 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class COV_Order_Status {
 
     /**
-     * Constructor.
-     */
-    public function __construct() {
-
-    }
-
-    /**
      * Registers the Pending Confirmation order status.
      */
     public function register_order_status() {
 
-        register_post_status( 
-            'wc-pending-confirmation', 
+        register_post_status(
+            COV_Helper::ORDER_STATUS_PENDING_CONFIRM,
             array(
                 'label'                     => __( 'Pending Confirmation', 'cod-verify-for-woocommerce' ),
                 'public'                    => false,
@@ -55,12 +48,12 @@ class COV_Order_Status {
 
         $modified_order_statuses = array();
 
-        foreach( $order_statuses as $status_key => $status_label ) {
+        foreach ( $order_statuses as $status_key => $status_label ) {
             
-            $modified_order_statuses[$status_key] = $status_label;
+            $modified_order_statuses[ $status_key ] = $status_label;
             
-            if( 'wc-pending' === $status_key ) {
-                $modified_order_statuses['wc-pending-confirmation'] = __( 
+            if ( 'wc-pending' === $status_key ) {
+                $modified_order_statuses[ COV_Helper::ORDER_STATUS_PENDING_CONFIRM ] = __( 
                     'Pending Confirmation', 
                     'cod-verify-for-woocommerce' 
                 );

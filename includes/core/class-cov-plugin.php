@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once COV_PLUGIN_PATH . 'includes/helpers/class-cov-helpers.php';
+
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status.php';
 
 class COV_Plugin {
