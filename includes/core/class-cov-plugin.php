@@ -10,9 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once COV_PLUGIN_PATH . 'includes/helpers/class-cov-helpers.php';
+require_once COV_PLUGIN_PATH . 'includes/helper/class-cov-helper.php';
 
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status.php';
+
+require_once COV_PLUGIN_PATH . 'includes/tokens/class-cov-token-manager.php';
 
 class COV_Plugin {
 
