@@ -21,7 +21,7 @@ class COV_Helper {
      * Pending confirmation order status.
      */
 
-    const ORDER_STATUS_PENDING_CONFIRM = 'wc-pending-confirm';
+    const ORDER_STATUS_PENDING_CONFIRM = 'pending-confirm';
 
     /**
 	 * Order meta keys.
