@@ -20,7 +20,7 @@ class COV_Order_Status {
     public function register_order_status() {
 
         register_post_status(
-            COV_Helper::ORDER_STATUS_PENDING_CONFIRM,
+            'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM,
             array(
                 'label'                     => __( 'Pending Confirmation', 'cod-verify-for-woocommerce' ),
                 'public'                    => false,
@@ -53,7 +53,7 @@ class COV_Order_Status {
             $modified_order_statuses[ $status_key ] = $status_label;
             
             if ( 'wc-pending' === $status_key ) {
-                $modified_order_statuses[ COV_Helper::ORDER_STATUS_PENDING_CONFIRM ] = __( 
+                $modified_order_statuses[ 'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM ] = __( 
                     'Pending Confirmation', 
                     'cod-verify-for-woocommerce' 
                 );

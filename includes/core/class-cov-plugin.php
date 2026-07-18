@@ -15,6 +15,7 @@ require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status.php';
 require_once COV_PLUGIN_PATH . 'includes/tokens/class-cov-token-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
 
 class COV_Plugin {
 
@@ -71,6 +72,16 @@ class COV_Plugin {
             'wp_enqueue_scripts',
             $assets,
             'enqueue_frontend_assets'
+        );
+
+        $order_initializer = new COV_Order_Initializer( $token_manager );
+
+        $this->loader->add_action(
+            'woocommerce_checkout_order_processed',
+            $order_initializer,
+            'initialize_order',
+            10,
+            3
         );
 
     }  

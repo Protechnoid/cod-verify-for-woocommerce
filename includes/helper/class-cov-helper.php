@@ -32,6 +32,11 @@ class COV_Helper {
     const META_CONFIRMED_AT = '_cov_confirmed_at';
 
     /**
+     * Token lifetime in seconds.
+     */
+    const TOKEN_LIFETIME = 6 * HOUR_IN_SECONDS;
+
+    /**
 	 * Cron hook names.
 	 */
     const CRON_CANCEL_ORDER = 'cov_cancel_unconfirmed_order';
