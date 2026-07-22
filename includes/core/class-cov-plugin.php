@@ -16,6 +16,7 @@ require_once COV_PLUGIN_PATH . 'includes/tokens/class-cov-token-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
+require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
 
 class COV_Plugin {
 
@@ -84,6 +85,19 @@ class COV_Plugin {
             3
         );
 
+        $settings = new COV_Settings();
+
+        $this->loader->add_action(
+            'admin_menu',
+            $settings,
+            'register_admin_menu'
+        );
+
+        $this->loader->add_action(
+            'admin_init',
+            $settings,
+            'register_settings'
+        );
     }  
 
 }
