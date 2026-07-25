@@ -39,6 +39,10 @@ class COV_Order_Initializer {
      */
     public function initialize_order( int $order_id, array $posted_data, WC_Order $order ) {
 
+    	if ( ! COV_Helper::is_plugin_enabled() ) {
+            return;
+        }
+
         if ( 'cod' !== $order->get_payment_method() ) {
             return;
         }
