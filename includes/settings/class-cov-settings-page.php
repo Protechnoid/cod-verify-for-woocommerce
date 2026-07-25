@@ -62,6 +62,8 @@ class COV_Settings_Page {
 			<h1>
 				<?php esc_html_e( 'COD Verify Settings', 'cod-verify-for-woocommerce' ); ?>
 			</h1>
+
+            <?php $this->render_admin_notices(); ?>
             
             <?php
                 $this->render_tabs();
@@ -74,20 +76,52 @@ class COV_Settings_Page {
 	}
 
     /**
-     * Render the active settings tab.
+     * Render admin notices.
+     *
+     * @return void
      */
-    private function render_active_tab() {
+    private function render_admin_notices(): void {
+
+        if (
+            isset( $_GET['saved'] ) &&
+            '1' === sanitize_text_field( wp_unslash( $_GET['saved'] ) )
+        ) {
+            ?>
+
+            <div class="notice notice-success is-dismissible">
+
+                <p>
+                    <?php esc_html_e( 'Settings saved successfully.', 'cod-verify-for-woocommerce' ); ?>
+                </p>
+
+            </div>
+
+            <?php
+        }
+    }
+
+    /**
+    * Render the active settings tab.
+    *
+    * @return void
+    */
+    private function render_active_tab(): void {
 
         $active_tab = $this->get_active_tab();
 
         if ( isset( $this->tabs[ $active_tab ] ) ) {
+
+            $this->tabs[ $active_tab ]->handle_save();
             $this->tabs[ $active_tab ]->render();
+
             return;
         }
 
         $first_tab = reset( $this->tabs );
 
-        if ( $first_tab ) {
+        if ( false !== $first_tab ) {
+
+            $first_tab->handle_save();
             $first_tab->render();
         }
     }

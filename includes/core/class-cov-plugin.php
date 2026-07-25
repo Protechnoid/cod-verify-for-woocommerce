@@ -92,12 +92,6 @@ class COV_Plugin {
             $settings,
             'register_admin_menu'
         );
-
-        $this->loader->add_action(
-            'admin_init',
-            $settings,
-            'register_settings'
-        );
     }  
 
 }

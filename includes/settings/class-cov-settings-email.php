@@ -2,7 +2,7 @@
 /**
  * Email Settings
  *
- * Handles the Email settings tab.
+ * Handles rendering and persistence of the Email settings tab.
  *
  * @package COD_Verify_For_WooCommerce
  */
@@ -11,7 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
+/**
+ * Email settings tab.
+ */
 class COV_Settings_Email implements COV_Settings_Tab_Interface {
 
 	/**
@@ -19,9 +21,9 @@ class COV_Settings_Email implements COV_Settings_Tab_Interface {
 	 *
 	 * @return string
 	 */
-	public function get_slug() {
+	public function get_slug(): string {
 
-		return 'email';
+		return COV_Helper::SETTINGS_EMAIL;
 	}
 
 	/**
@@ -29,22 +31,15 @@ class COV_Settings_Email implements COV_Settings_Tab_Interface {
 	 *
 	 * @return string
 	 */
-	public function get_title() {
+	public function get_title(): string {
 
 		return __( 'Email', 'cod-verify-for-woocommerce' );
 	}
 
 	/**
-	 * Register settings.
-	 */
-	public function register_settings() {
-		// No settings yet.
-	}
-
-	/**
 	 * Render the Email tab.
 	 */
-	public function render() {
+	public function render(): void {
 
 		?>
 
@@ -55,5 +50,27 @@ class COV_Settings_Email implements COV_Settings_Tab_Interface {
 		</p>
 
 		<?php
+	}
+
+	/**
+	 * Processes the settings form submission.
+	 *
+	 * @return void
+	 */
+	public function handle_save(): void {
+
+		// Email settings are not implemented yet.
+	}
+
+	/**
+	 * Sanitizes the submitted settings.
+	 *
+	 * @param array $settings Raw settings.
+	 * @return array
+	 */
+	public function sanitize( array $settings ): array {
+
+		// No email settings to sanitize yet.
+		return $settings;
 	}
 }
