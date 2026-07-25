@@ -98,6 +98,39 @@ class COV_Settings_Page {
 
             <?php
         }
+
+        
+        if ( isset( $_GET['email_test'] ) ) {
+
+            $status = sanitize_key( wp_unslash( $_GET['email_test'] ) );
+
+            if ( 'success' === $status ) {
+
+                ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>
+                        <?php esc_html_e(
+                            'Test email queued successfully. Please check the recipient inbox (and spam folder).',
+                            'cod-verify-for-woocommerce'
+                        ); ?>
+                    </p>
+                </div>
+                <?php
+
+            } elseif ( 'failed' === $status ) {
+
+                ?>
+                <div class="notice notice-error is-dismissible">
+                    <p>
+                        <?php esc_html_e(
+                            'Unable to send the test email. Please check your WordPress email configuration.',
+                            'cod-verify-for-woocommerce'
+                        ); ?>
+                    </p>
+                </div>
+                <?php
+            }
+        }
     }
 
     /**
