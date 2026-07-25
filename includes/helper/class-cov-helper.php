@@ -56,4 +56,27 @@ class COV_Helper {
 	 */
 	const SETTINGS_GENERAL = 'general';
 	const SETTINGS_EMAIL   = 'email';
+
+
+	/**
+	 * Check whether the plugin is enabled.
+	 *
+	 * @return bool True if the plugin is enabled, otherwise false.
+	 */
+	public static function is_plugin_enabled(): bool {
+
+		$settings = get_option(
+			self::OPTION_GENERAL_SETTINGS,
+			array()
+		);
+
+		$settings = wp_parse_args(
+			$settings,
+			array(
+				'enabled' => true,
+			)
+		);
+
+		return (bool) $settings['enabled'];
+	}
 }

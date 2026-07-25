@@ -39,6 +39,10 @@ class COV_Confirmation_Handler {
 	 */
 	public function handle_confirmation_request() {
 
+		if ( ! COV_Helper::is_plugin_enabled() ) {
+			return;
+		}
+
 		// Only handle frontend requests.
 		if ( is_admin() ) {
 			return;
