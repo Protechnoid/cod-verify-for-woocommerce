@@ -15,7 +15,6 @@ require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-tab-interfa
 
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-general.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-email.php';
-require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-debug.php';
 
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-page.php';
 
@@ -46,7 +45,6 @@ class COV_Settings {
 		$this->tabs = array(
 			'general' => new COV_Settings_General(),
 			'email'   => new COV_Settings_Email(),
-			'debug'   => new COV_Settings_Debug(),
 		);
 
 		$this->page = new COV_Settings_Page(
@@ -60,16 +58,6 @@ class COV_Settings {
 	public function register_admin_menu() {
 
 		$this->page->register_admin_menu();
-	}
-
-	/**
-	 * Register settings for all tabs.
-	 */
-	public function register_settings() {
-
-		foreach ( $this->tabs as $tab ) {
-			$tab->register_settings();
-		}
 	}
 
 }

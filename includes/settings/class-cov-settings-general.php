@@ -1,8 +1,8 @@
 <?php
 /**
- * General Settings
+ * General Settings tab.
  *
- * Registers and manages the General settings tab.
+ * Handles rendering, validation and persistence of the General settings.
  *
  * @package COD_Verify_For_WooCommerce
  */
@@ -17,21 +17,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 	/**
-	 * Register plugin settings.
+	 * Processes the settings form submission.
+	 *
+	 * @return void
 	 */
-	public function register_settings(): void {
+	public function handle_save(): void {
 
-		register_setting(
-			COV_Helper::SETTINGS_GROUP,
-			COV_Helper::OPTION_SETTINGS,
-			array(
-				'type'              => 'array',
-				'sanitize_callback' => array( $this, 'sanitize_settings' ),
-				'default'           => array(),
+		// Only process our own form.
+		if ( empty( $_POST['cov_general_submit'] ) ) {
+			return;
+		}
+
+		// Verify nonce.
+		if (
+			empty( $_POST['cov_general_nonce'] ) ||
+			! wp_verify_nonce(
+				sanitize_text_field( wp_unslash( $_POST['cov_general_nonce'] ) ),
+				'cov_general_settings'
+			)
+		) {
+			return;
+		}
+
+		// Check user capability.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Get submitted settings.
+		$settings = isset( $_POST[ COV_Helper::OPTION_GENERAL_SETTINGS ] )
+			? (array) wp_unslash( $_POST[ COV_Helper::OPTION_GENERAL_SETTINGS ] )
+			: array();
+
+		// Sanitize settings.
+		$settings = $this->sanitize( $settings );
+
+		// Save settings.
+		update_option(
+			COV_Helper::OPTION_GENERAL_SETTINGS,
+			$settings
+		);
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'    => COV_Helper::PAGE_SETTINGS,
+					'tab'     => $this->get_slug(),
+					'saved'   => '1',
+				),
+				admin_url( 'admin.php' )
 			)
 		);
 
-		$this->register_settings_sections();
+		exit;
 	}
 
 	/**
@@ -40,69 +78,76 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	 * @param array $settings Raw submitted settings.
 	 * @return array Sanitized settings.
 	 */
-	public function sanitize_settings( $settings ): array {
+	public function sanitize( array $settings ): array {
 
 		if ( ! is_array( $settings ) ) {
 			return array();
 		}
 
-		$general = $settings[ COV_Helper::SETTINGS_GENERAL ] ?? array();
+		$timeout = isset( $settings['timeout'] )
+			? max( 1, absint( $settings['timeout'] ) ) * HOUR_IN_SECONDS
+			: COV_Helper::TOKEN_LIFETIME;
 
-		$timeout = isset( $general['timeout'] )
-			? max( 1, absint( $general['timeout'] ) ) * HOUR_IN_SECONDS
-			: 6 * HOUR_IN_SECONDS;
-
-		return array(
-			COV_Helper::SETTINGS_GENERAL => array(
-				'enabled' => ! empty( $general['enabled'] ) ? 1 : 0,
-				'timeout' => $timeout,
-			),
-		);
-	}
-
-	/**
-	 * Register settings section and fields.
-	 */
-	public function register_settings_sections(): void {
-
-		add_settings_section(
-			COV_Helper::SECTION_GENERAL,
-			__( 'General Settings', 'cod-verify-for-woocommerce' ),
-			array( $this, 'render_general_section' ),
-			COV_Helper::PAGE_SETTINGS
+		$return = array(
+			'enabled' => ! empty( $settings['enabled'] ) ? 1 : 0,
+			'timeout' => $timeout,
 		);
 
-		add_settings_field(
-			'cov_enabled',
-			__( 'Enable Plugin', 'cod-verify-for-woocommerce' ),
-			array( $this, 'render_enable_plugin_field' ),
-			COV_Helper::PAGE_SETTINGS,
-			COV_Helper::SECTION_GENERAL
-		);
-
-		add_settings_field(
-			'cov_timeout',
-			__( 'Verification Timeout', 'cod-verify-for-woocommerce' ),
-			array( $this, 'render_timeout_field' ),
-			COV_Helper::PAGE_SETTINGS,
-			COV_Helper::SECTION_GENERAL
-		);
+		return $return;
 	}
 
 	/**
 	 * Render the General settings tab.
+	 *
+	 * @return void
 	 */
 	public function render(): void {
 
+		$this->render_form();
+	}
+
+	/**
+	 * Render the General settings form.
+	 *
+	 * @return void
+	 */
+	private function render_form(): void {
+
 		?>
 
-		<form method="post" action="options.php">
+		<form method="post">
 
-			<?php
-			settings_fields( COV_Helper::SETTINGS_GROUP );
-			do_settings_sections( COV_Helper::PAGE_SETTINGS );
-			submit_button();
-			?>
+			<?php wp_nonce_field( 'cov_general_settings', 'cov_general_nonce' ); ?>
+
+			<input type="hidden" name="cov_general_submit" value="1" />
+
+			<h2><?php esc_html_e( 'General Settings', 'cod-verify-for-woocommerce' ); ?></h2>
+
+			<?php $this->render_general_section(); ?>
+
+			<table class="form-table" role="presentation">
+
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Enable Plugin', 'cod-verify-for-woocommerce' ); ?>
+					</th>
+					<td>
+						<?php $this->render_enable_plugin_field(); ?>
+					</td>
+				</tr>
+
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Verification Timeout', 'cod-verify-for-woocommerce' ); ?>
+					</th>
+					<td>
+						<?php $this->render_timeout_field(); ?>
+					</td>
+				</tr>
+
+			</table>
+
+			<?php submit_button(); ?>
 
 		</form>
 
@@ -112,7 +157,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	/**
 	 * Render the General Settings section description.
 	 */
-	public function render_general_section(): void {
+	private function render_general_section(): void {
 
 		echo '<p>' .
 			esc_html__(
@@ -125,13 +170,9 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	/**
 	 * Render the Enable Plugin field.
 	 */
-	public function render_enable_plugin_field(): void {
+	private function render_enable_plugin_field(): void {
 
-		$general = COV_Helper::get_settings(
-			COV_Helper::SETTINGS_GENERAL
-		);
-
-		$field_name = COV_Helper::OPTION_SETTINGS . '[' . COV_Helper::SETTINGS_GENERAL . '][enabled]';
+		$general = $this->get_settings();
 
 		?>
 
@@ -139,13 +180,13 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 			<input
 				type="hidden"
-				name="<?php echo esc_attr( $field_name ); ?>"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[enabled]"
 				value="0"
 			/>
 
 			<input
 				type="checkbox"
-				name="<?php echo esc_attr( $field_name ); ?>"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[enabled]"
 				value="1"
 				<?php checked( ! empty( $general['enabled'] ) ); ?>
 			/>
@@ -162,23 +203,17 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	 *
 	 * The timeout is stored in seconds but displayed in hours.
 	 */
-	public function render_timeout_field(): void {
+	private function render_timeout_field(): void {
 
-		$general = COV_Helper::get_settings(
-			COV_Helper::SETTINGS_GENERAL
-		);
+		$general = $this->get_settings();
 
-		$timeout = isset( $general['timeout'] )
-			? absint( $general['timeout'] ) / HOUR_IN_SECONDS
-			: 6;
-
-		$field_name = COV_Helper::OPTION_SETTINGS . '[' . COV_Helper::SETTINGS_GENERAL . '][timeout]';
+		$timeout = (int) ( absint( $general['timeout'] ) / HOUR_IN_SECONDS );
 
 		?>
 
 		<input
 			type="number"
-			name="<?php echo esc_attr( $field_name ); ?>"
+			name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout]"
 			value="<?php echo esc_attr( $timeout ); ?>"
 			min="1"
 			step="1"
@@ -190,6 +225,22 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 		</p>
 
 		<?php
+	}
+
+	/**
+	 * Get the General settings.
+	 *
+	 * @return array
+	 */
+	private function get_settings(): array {
+
+		return get_option(
+			COV_Helper::OPTION_GENERAL_SETTINGS,
+			array(
+				'enabled' => 1,
+				'timeout' => COV_Helper::TOKEN_LIFETIME,
+			)
+		);
 	}
 
 	/**

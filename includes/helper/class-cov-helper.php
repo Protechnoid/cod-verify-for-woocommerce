@@ -2,7 +2,7 @@
 /**
  * Helper class
  *
- * Provides shared constants and helper methods used throughout the plugin.
+ * Provides shared constants used throughout the plugin.
  *
  * @package COD_Verify_For_WooCommerce
  */
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Shared plugin constants and helper methods.
+ * Shared plugin constants.
  */
 class COV_Helper {
 
@@ -24,10 +24,10 @@ class COV_Helper {
 	/**
 	 * Order meta keys.
 	 */
-	const META_TOKEN           = '_cov_token';
-	const META_TOKEN_EXPIRES   = '_cov_token_expires';
-	const META_TOKEN_USED      = '_cov_token_used';
-	const META_CONFIRMED_AT    = '_cov_confirmed_at';
+	const META_TOKEN         = '_cov_token';
+	const META_TOKEN_EXPIRES = '_cov_token_expires';
+	const META_TOKEN_USED    = '_cov_token_used';
+	const META_CONFIRMED_AT  = '_cov_confirmed_at';
 
 	/**
 	 * Token lifetime in seconds.
@@ -41,51 +41,19 @@ class COV_Helper {
 	const CRON_SEND_REMINDER = 'cov_send_reminder_email';
 
 	/**
-	 * Settings.
+	 * Settings option names.
 	 */
-	const OPTION_SETTINGS = 'cov_settings';
-	const SETTINGS_GROUP  = 'cov_settings_group';
+	const OPTION_GENERAL_SETTINGS = 'cov_settings_general';
+	const OPTION_EMAIL_SETTINGS   = 'cov_settings_email';
 
 	/**
-	 * Settings pages.
+	 * Admin page slug.
 	 */
-	const PAGE_SETTINGS   = 'cov-settings';
-
-	/**
-	 * Settings sections.
-	 */
-	const SECTION_GENERAL = 'cov_general_section';
+	const PAGE_SETTINGS = 'cov-settings';
 
 	/**
 	 * Settings tabs.
 	 */
 	const SETTINGS_GENERAL = 'general';
 	const SETTINGS_EMAIL   = 'email';
-	const SETTINGS_DEBUG   = 'debug';
-
-	/**
-	 * Get plugin settings.
-	 *
-	 * Returns all plugin settings or a specific settings section.
-	 *
-	 * @param string $section Optional settings section.
-	 * @return array
-	 */
-	public static function get_settings( string $section = '' ): array {
-
-		$settings = get_option(
-			self::OPTION_SETTINGS,
-			array()
-		);
-
-		if ( ! is_array( $settings ) ) {
-			return array();
-		}
-
-		if ( '' === $section ) {
-			return $settings;
-		}
-
-		return $settings[ $section ] ?? array();
-	}
 }

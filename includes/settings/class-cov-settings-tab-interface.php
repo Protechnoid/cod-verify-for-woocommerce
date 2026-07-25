@@ -12,36 +12,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Settings tab interface.
+ * Interface for settings tabs.
  */
 interface COV_Settings_Tab_Interface {
 
 	/**
-	 * Get the tab slug.
+	 * Returns the tab slug.
 	 *
 	 * @return string
 	 */
-	public function get_slug();
+	public function get_slug(): string;
 
 	/**
-	 * Get the tab title.
+	 * Returns the tab title.
 	 *
 	 * @return string
 	 */
-	public function get_title();
+	public function get_title(): string;
 
 	/**
-	 * Render the tab.
+	 * Processes the settings form submission.
 	 *
 	 * @return void
 	 */
-	public function render();
+	public function handle_save(): void;
 
 	/**
-	 * Register settings for the tab.
+	 * Sanitizes the submitted settings.
+	 *
+	 * @param array $settings Raw settings.
+	 * @return array
+	 */
+	public function sanitize( array $settings ): array;
+
+	/**
+	 * Renders the settings tab.
 	 *
 	 * @return void
 	 */
-	public function register_settings();
-
+	public function render(): void;
 }
