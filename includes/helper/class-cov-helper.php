@@ -44,7 +44,6 @@ class COV_Helper {
 	 * Settings option names.
 	 */
 	const OPTION_GENERAL_SETTINGS = 'cov_settings_general';
-	const OPTION_EMAIL_SETTINGS   = 'cov_settings_email';
 
 	/**
 	 * Admin page slug.
@@ -78,6 +77,28 @@ class COV_Helper {
 		);
 
 		return (bool) $settings['enabled'];
+	}
+
+	/**
+	 * Get the verification timeout in hours.
+	 *
+	 * @return int
+	 */
+	public static function get_verification_timeout(): int {
+	
+		$settings = get_option(
+			self::OPTION_GENERAL_SETTINGS,
+			array()
+		);
+
+		$settings = wp_parse_args(
+			$settings,
+			array(
+				'timeout' => self::TOKEN_LIFETIME,
+			)
+		);
+
+		return (int) ( $settings['timeout'] / HOUR_IN_SECONDS );
 	}
 
 }
