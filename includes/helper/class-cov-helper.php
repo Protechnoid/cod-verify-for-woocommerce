@@ -79,4 +79,5 @@ class COV_Helper {
 
 		return (bool) $settings['enabled'];
 	}
+
 }

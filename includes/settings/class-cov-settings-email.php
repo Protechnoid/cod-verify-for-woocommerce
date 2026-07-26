@@ -399,6 +399,58 @@ class COV_Settings_Email implements COV_Settings_Tab_Interface {
 
 			</table>
 
+			<?php
+				$placeholders = COV_Placeholder_Manager::get_supported_placeholders();
+			?>
+
+			<h3>
+				<?php esc_html_e( 'Available Placeholders', 'cod-verify-for-woocommerce' ); ?>
+			</h3>
+
+			<table class="widefat striped" style="max-width:700px;margin-bottom:20px;">
+
+				<thead>
+
+					<tr>
+
+						<th style="width:220px;">
+							<?php esc_html_e( 'Placeholder', 'cod-verify-for-woocommerce' ); ?>
+						</th>
+
+						<th>
+							<?php esc_html_e( 'Description', 'cod-verify-for-woocommerce' ); ?>
+						</th>
+
+					</tr>
+
+				</thead>
+
+				<tbody>
+
+					<?php foreach ( $placeholders as $placeholder => $description ) : ?>
+
+						<tr>
+
+							<td>
+
+								<code><?php echo esc_html( $placeholder ); ?></code>
+
+							</td>
+
+							<td>
+
+								<?php echo esc_html( $description ); ?>
+
+							</td>
+
+						</tr>
+
+					<?php endforeach; ?>
+
+				</tbody>
+
+			</table>
+
 			<?php submit_button(); ?>
 
 		</form>
