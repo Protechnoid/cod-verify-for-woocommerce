@@ -16,24 +16,24 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class COV_Settings_Page {
 
-    /**
-     * Settings tabs.
-     *
-     * Array of tab instances keyed by tab slug.
-     *
-     * @var array<string, object>
-     */
-    private array $tabs;
+	/**
+	 * Settings tabs.
+	 *
+	 * Array of tab instances keyed by tab slug.
+	 *
+	 * @var array<string, object>
+	 */
+	private array $tabs;
 
-    /**
-     * Constructor.
-     *
-     * @param array<string, object> $tabs Settings tab instances.
-     */
-    public function __construct( array $tabs ) {
+	/**
+	 * Constructor.
+	 *
+	 * @param array<string, object> $tabs Settings tab instances.
+	 */
+	public function __construct( array $tabs ) {
 
-        $this->tabs = $tabs;
-    }
+		$this->tabs = $tabs;
+	}
 
 	/**
 	 * Register the plugin settings page.
@@ -63,144 +63,115 @@ class COV_Settings_Page {
 				<?php esc_html_e( 'COD Verify Settings', 'cod-verify-for-woocommerce' ); ?>
 			</h1>
 
-            <?php $this->render_admin_notices(); ?>
-            
-            <?php
-                $this->render_tabs();
-                $this->render_active_tab();
-            ?>
+			<?php $this->render_admin_notices(); ?>
+
+			<?php
+			$this->render_tabs();
+			$this->render_active_tab();
+			?>
 
 		</div>
 
 		<?php
 	}
 
-    /**
-     * Render admin notices.
-     *
-     * @return void
-     */
-    private function render_admin_notices(): void {
+	/**
+	 * Render admin notices.
+	 *
+	 * @return void
+	 */
+	private function render_admin_notices(): void {
 
-        if (
-            isset( $_GET['saved'] ) &&
-            '1' === sanitize_text_field( wp_unslash( $_GET['saved'] ) )
-        ) {
-            ?>
+		if (
+			isset( $_GET['saved'] ) &&
+			'1' === sanitize_text_field( wp_unslash( $_GET['saved'] ) )
+		) {
+			?>
 
-            <div class="notice notice-success is-dismissible">
+			<div class="notice notice-success is-dismissible">
 
-                <p>
-                    <?php esc_html_e( 'Settings saved successfully.', 'cod-verify-for-woocommerce' ); ?>
-                </p>
+				<p>
+					<?php esc_html_e( 'Settings saved successfully.', 'cod-verify-for-woocommerce' ); ?>
+				</p>
 
-            </div>
+			</div>
 
-            <?php
-        }
+			<?php
+		}
+	}
 
-        
-        if ( isset( $_GET['email_test'] ) ) {
+	/**
+	 * Render the active settings tab.
+	 *
+	 * @return void
+	 */
+	private function render_active_tab(): void {
 
-            $status = sanitize_key( wp_unslash( $_GET['email_test'] ) );
+		$active_tab = $this->get_active_tab();
 
-            if ( 'success' === $status ) {
+		if ( isset( $this->tabs[ $active_tab ] ) ) {
 
-                ?>
-                <div class="notice notice-success is-dismissible">
-                    <p>
-                        <?php esc_html_e(
-                            'Test email queued successfully. Please check the recipient inbox (and spam folder).',
-                            'cod-verify-for-woocommerce'
-                        ); ?>
-                    </p>
-                </div>
-                <?php
+			$this->tabs[ $active_tab ]->handle_save();
+			$this->tabs[ $active_tab ]->render();
 
-            } elseif ( 'failed' === $status ) {
+			return;
+		}
 
-                ?>
-                <div class="notice notice-error is-dismissible">
-                    <p>
-                        <?php esc_html_e(
-                            'Unable to send the test email. Please check your WordPress email configuration.',
-                            'cod-verify-for-woocommerce'
-                        ); ?>
-                    </p>
-                </div>
-                <?php
-            }
-        }
-    }
+		$first_tab = reset( $this->tabs );
 
-    /**
-    * Render the active settings tab.
-    *
-    * @return void
-    */
-    private function render_active_tab(): void {
+		if ( false !== $first_tab ) {
 
-        $active_tab = $this->get_active_tab();
+			$first_tab->handle_save();
+			$first_tab->render();
+		}
+	}
 
-        if ( isset( $this->tabs[ $active_tab ] ) ) {
+	/**
+	 * Get the active settings tab.
+	 *
+	 * @return string
+	 */
+	private function get_active_tab(): string {
 
-            $this->tabs[ $active_tab ]->handle_save();
-            $this->tabs[ $active_tab ]->render();
+		return isset( $_GET['tab'] )
+			? sanitize_key( wp_unslash( $_GET['tab'] ) )
+			: 'general';
+	}
 
-            return;
-        }
+	/**
+	 * Render the settings navigation tabs.
+	 *
+	 * @return void
+	 */
+	private function render_tabs(): void {
 
-        $first_tab = reset( $this->tabs );
+		// Don't render navigation if only one tab exists.
+		if ( count( $this->tabs ) <= 1 ) {
+			return;
+		}
 
-        if ( false !== $first_tab ) {
+		$active_tab = $this->get_active_tab();
 
-            $first_tab->handle_save();
-            $first_tab->render();
-        }
-    }
+		echo '<h2 class="nav-tab-wrapper">';
 
-    /**
-     * Get the active settings tab.
-     *
-     * @return string
-     */
-    private function get_active_tab() {
+		foreach ( $this->tabs as $tab ) {
 
-        return isset( $_GET['tab'] )
-            ? sanitize_key( wp_unslash( $_GET['tab'] ) )
-            : 'general';
-    }
+			$url = add_query_arg(
+				array(
+					'page' => COV_Helper::PAGE_SETTINGS,
+					'tab'  => $tab->get_slug(),
+				),
+				admin_url( 'admin.php' )
+			);
 
+			printf(
+				'<a href="%1$s" class="nav-tab %2$s">%3$s</a>',
+				esc_url( $url ),
+				$active_tab === $tab->get_slug() ? 'nav-tab-active' : '',
+				esc_html( $tab->get_title() )
+			);
+		}
 
-    /**
-     * Render the settings navigation tabs.
-     */
-    private function render_tabs() {
-
-        $active_tab = $this->get_active_tab();
-
-        echo '<h2 class="nav-tab-wrapper">';
-
-        foreach ( $this->tabs as $tab ) {
-
-            $url = add_query_arg(
-                array(
-                    'page' => COV_Helper::PAGE_SETTINGS,
-                    'tab'  => $tab->get_slug(),
-                ),
-                admin_url( 'admin.php' )
-            );
-
-            printf(
-                '<a href="%1$s" class="nav-tab %2$s">%3$s</a>',
-                esc_url( $url ),
-                $active_tab === $tab->get_slug() ? 'nav-tab-active' : '',
-                esc_html( $tab->get_title() )
-            );
-        }
-
-        echo '</h2>';
-    }
-
-
+		echo '</h2>';
+	}
 }

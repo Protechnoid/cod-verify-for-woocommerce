@@ -18,6 +18,7 @@ require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
 require_once COV_PLUGIN_PATH . 'includes/placeholders/class-cov-placeholder-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
+require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
 
 
@@ -95,6 +96,22 @@ class COV_Plugin {
             $settings,
             'register_admin_menu'
         );
+
+        //Email
+        $email = new COV_Emails();
+
+        $this->loader->add_filter(
+            'woocommerce_email_classes',
+            $email,
+            'register_email_classes'
+        );
+
+        $this->loader->add_action(
+            'cov_customer_confirmation_ready',
+            $email,
+            'trigger_customer_confirmation_email'
+        );
+
     }  
 
 }

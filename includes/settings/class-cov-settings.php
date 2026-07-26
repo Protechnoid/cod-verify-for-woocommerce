@@ -14,7 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-tab-interface.php';
 
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-general.php';
-require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-email.php';
 
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-page.php';
 
@@ -44,7 +43,6 @@ class COV_Settings {
 
 		$this->tabs = array(
 			'general' => new COV_Settings_General(),
-			'email'   => new COV_Settings_Email(),
 		);
 
 		$this->page = new COV_Settings_Page(
