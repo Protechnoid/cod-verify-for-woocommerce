@@ -41,13 +41,13 @@ echo esc_html__(
 
 echo esc_url( $confirmation_url ) . "\n\n";
 
-/* translators: %d: Verification expiry in hours. */
+/* translators: %s: Verification timeout (e.g. "6 hours" or "30 minutes"). */
 printf(
 	esc_html__(
-		'This verification link expires in %d hours.',
+		'This verification link expires in %s.',
 		'cod-verify-for-woocommerce'
 	),
-	COV_Helper::get_verification_timeout()
+	esc_html( COV_Helper::get_token_lifetime_label() )
 );
 
 echo "\n\n";
