@@ -83,13 +83,14 @@ $button_text = apply_filters(
 <p style="text-align: center;">
 
 	<?php
-        printf(
-            esc_html__(
-                'This verification link expires in %d hours.',
-                'cod-verify-for-woocommerce'
-            ),
-            COV_Helper::get_verification_timeout()
-        );
+		printf(
+			/* translators: %s: Verification timeout (e.g. "6 hours" or "30 minutes"). */
+			esc_html__(
+				'This verification link expires in %s.',
+				'cod-verify-for-woocommerce'
+			),
+			esc_html( COV_Helper::get_token_lifetime_label() )
+		);
 	?>
 
 </p>

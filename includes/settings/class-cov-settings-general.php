@@ -85,15 +85,24 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 		}
 
 		$timeout = isset( $settings['timeout'] )
-			? max( 1, absint( $settings['timeout'] ) ) * HOUR_IN_SECONDS
-			: COV_Helper::TOKEN_LIFETIME;
+			? max( 1, absint( $settings['timeout'] ) )
+			: 6;
 
-		$return = array(
-			'enabled' => ! empty( $settings['enabled'] ) ? 1 : 0,
-			'timeout' => $timeout,
+		$allowed_units = array(
+			COV_Helper::TIMEOUT_MINUTES,
+			COV_Helper::TIMEOUT_HOURS,
 		);
 
-		return $return;
+		$timeout_unit = isset( $settings['timeout_unit'] )
+			&& in_array( $settings['timeout_unit'], $allowed_units, true )
+				? $settings['timeout_unit']
+				: COV_Helper::TIMEOUT_HOURS;
+
+		return array(
+			'enabled'      => ! empty( $settings['enabled'] ) ? 1 : 0,
+			'timeout'      => $timeout,
+			'timeout_unit' => $timeout_unit,
+		);
 	}
 
 	/**
@@ -200,28 +209,49 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 	/**
 	 * Render the Verification Timeout field.
-	 *
-	 * The timeout is stored in seconds but displayed in hours.
 	 */
 	private function render_timeout_field(): void {
 
 		$general = $this->get_settings();
-
-		$timeout = (int) ( absint( $general['timeout'] ) / HOUR_IN_SECONDS );
 
 		?>
 
 		<input
 			type="number"
 			name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout]"
-			value="<?php echo esc_attr( $timeout ); ?>"
+			value="<?php echo esc_attr( absint( $general['timeout'] ) ); ?>"
 			min="1"
 			step="1"
 			class="small-text"
 		/>
 
+		<select
+			name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout_unit]"
+		>
+
+			<option
+				value="<?php echo esc_attr( COV_Helper::TIMEOUT_MINUTES ); ?>"
+				<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_MINUTES ); ?>
+			>
+				<?php esc_html_e( 'Minutes', 'cod-verify-for-woocommerce' ); ?>
+			</option>
+
+			<option
+				value="<?php echo esc_attr( COV_Helper::TIMEOUT_HOURS ); ?>"
+				<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_HOURS ); ?>
+			>
+				<?php esc_html_e( 'Hours', 'cod-verify-for-woocommerce' ); ?>
+			</option>
+
+		</select>
+
 		<p class="description">
-			<?php esc_html_e( 'Number of hours before an unconfirmed order expires.', 'cod-verify-for-woocommerce' ); ?>
+			<?php
+			esc_html_e(
+				'Choose how long customers have to verify their COD order.',
+				'cod-verify-for-woocommerce'
+			);
+			?>
 		</p>
 
 		<?php
@@ -234,13 +264,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	 */
 	private function get_settings(): array {
 
-		return get_option(
-			COV_Helper::OPTION_GENERAL_SETTINGS,
-			array(
-				'enabled' => 1,
-				'timeout' => COV_Helper::TOKEN_LIFETIME,
-			)
-		);
+		return COV_Helper::get_general_settings();
 	}
 
 	/**
