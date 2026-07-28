@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once COV_PLUGIN_PATH . 'includes/helper/class-cov-helper.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status.php';
 require_once COV_PLUGIN_PATH . 'includes/tokens/class-cov-token-manager.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-auto-cancel.php';
 require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
@@ -20,6 +21,7 @@ require_once COV_PLUGIN_PATH . 'includes/placeholders/class-cov-placeholder-mana
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
+
 
 
 class COV_Plugin {
@@ -110,6 +112,23 @@ class COV_Plugin {
             'cov_customer_confirmation_ready',
             $email,
             'trigger_customer_confirmation_email'
+        );
+
+        //Order auto cancel
+        $order_auto_cancel = new COV_Order_Auto_Cancel();
+
+        $this->loader->add_action(
+            COV_Helper::CRON_CANCEL_ORDER,
+            $order_auto_cancel,
+            'auto_cancel_order'
+        );
+
+        $this->loader->add_action(
+            'woocommerce_order_status_changed',
+            $order_auto_cancel,
+            'maybe_unschedule_auto_cancel',
+            10,
+            4
         );
 
     }  

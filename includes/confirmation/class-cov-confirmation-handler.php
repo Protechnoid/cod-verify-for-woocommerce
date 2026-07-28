@@ -21,7 +21,7 @@ class COV_Confirmation_Handler {
 	 *
 	 * @var COV_Token_Manager
 	 */
-	private $token_manager;
+	private COV_Token_Manager $token_manager;
 
 	/**
 	 * Constructor.
