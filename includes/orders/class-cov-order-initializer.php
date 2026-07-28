@@ -66,6 +66,14 @@ class COV_Order_Initializer {
 			__( 'Order awaiting customer verification.', 'cod-verify-for-woocommerce' )
 		);
 
+		$hook      = COV_Helper::CRON_CANCEL_ORDER;
+		$timestamp = $expires_at;
+		$args      = array( $order->get_id() );
+
+		if ( ! wp_next_scheduled( $hook, $args ) ) {
+			wp_schedule_single_event( $timestamp, $hook, $args );
+		}
+
 		/**
 		 * Fires after a COD order has been initialized for customer confirmation.
 		 *
