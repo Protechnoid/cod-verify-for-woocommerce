@@ -30,12 +30,12 @@ class COV_Email_Confirmation extends WC_Email {
 		$this->template_base  = COV_PLUGIN_PATH . 'includes/templates/';
 
 		$this->subject = __(
-			'Please confirm your Cash on Delivery order',
+			'Please Confirm Your Cash on Delivery Order',
 			'cod-verify-for-woocommerce'
 		);
 
 		$this->heading = __(
-			'Confirm Your Order',
+			'Please Confirm Your Cash on Delivery Order',
 			'cod-verify-for-woocommerce'
 		);
 
