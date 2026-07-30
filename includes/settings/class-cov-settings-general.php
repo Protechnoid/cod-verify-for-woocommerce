@@ -99,9 +99,11 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 				: COV_Helper::TIMEOUT_HOURS;
 
 		return array(
-			'enabled'      => ! empty( $settings['enabled'] ) ? 1 : 0,
-			'timeout'      => $timeout,
-			'timeout_unit' => $timeout_unit,
+			'enabled'               => ! empty( $settings['enabled'] ) ? 1 : 0,
+			'timeout'               => $timeout,
+			'timeout_unit'          => $timeout_unit,
+			'notify_merchant'       => ! empty( $settings['notify_merchant'] ) ? 1 : 0,
+			'send_processing_email' => ! empty( $settings['send_processing_email'] ) ? 1 : 0,
 		);
 	}
 
@@ -156,6 +158,34 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 			</table>
 
+			<hr>
+
+			<h2><?php esc_html_e( 'Email Notifications', 'cod-verify-for-woocommerce' ); ?></h2>
+
+			<?php $this->render_notification_section(); ?>
+
+			<table class="form-table" role="presentation">
+
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Merchant (Store Owner)', 'cod-verify-for-woocommerce' ); ?>
+					</th>
+					<td>
+						<?php $this->render_notify_merchant_field(); ?>
+					</td>
+				</tr>
+
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Customer', 'cod-verify-for-woocommerce' ); ?>
+					</th>
+					<td>
+						<?php $this->render_processing_email_field(); ?>
+					</td>
+				</tr>
+
+			</table>
+
 			<?php submit_button(); ?>
 
 		</form>
@@ -170,7 +200,20 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 		echo '<p>' .
 			esc_html__(
-				'Configure the general behaviour of COD Verify.',
+				'Configure the core settings for COD Verify, including plugin status and the customer verification timeout.',
+				'cod-verify-for-woocommerce'
+			) .
+		'</p>';
+	}
+
+	/**
+	 * Render the Notification Settings section description.
+	 */
+	private function render_notification_section(): void {
+
+		echo '<p>' .
+			esc_html__(
+				'Choose which email notifications are sent after a customer successfully verifies their COD order.',
 				'cod-verify-for-woocommerce'
 			) .
 		'</p>';
@@ -200,7 +243,69 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 				<?php checked( ! empty( $general['enabled'] ) ); ?>
 			/>
 
-			<?php esc_html_e( 'Enable COD Verify for WooCommerce', 'cod-verify-for-woocommerce' ); ?>
+			<?php esc_html_e( 'Enable COD verification', 'cod-verify-for-woocommerce' ); ?>
+
+		</label>
+
+		<?php
+	}
+
+	/**
+	 * Render the Merchant notification field.
+	 */
+	private function render_notify_merchant_field(): void {
+
+		$general = $this->get_settings();
+
+		?>
+
+		<label>
+
+			<input
+				type="hidden"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[notify_merchant]"
+				value="0"
+			/>
+
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[notify_merchant]"
+				value="1"
+				<?php checked( ! empty( $general['notify_merchant'] ) ); ?>
+			/>
+
+			<?php esc_html_e( 'Notify the store owner after a customer successfully verifies a COD order.', 'cod-verify-for-woocommerce' ); ?>
+
+		</label>
+
+		<?php
+	}
+
+	/**
+	 * Render the Customer processing email field.
+	 */
+	private function render_processing_email_field(): void {
+
+		$general = $this->get_settings();
+
+		?>
+
+		<label>
+
+			<input
+				type="hidden"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[send_processing_email]"
+				value="0"
+			/>
+
+			<input
+				type="checkbox"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[send_processing_email]"
+				value="1"
+				<?php checked( ! empty( $general['send_processing_email'] ) ); ?>
+			/>
+
+			<?php esc_html_e( 'Send the WooCommerce "Processing Order" email after the customer successfully verifies their COD order.', 'cod-verify-for-woocommerce' ); ?>
 
 		</label>
 
@@ -216,39 +321,43 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 		?>
 
-		<input
-			type="number"
-			name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout]"
-			value="<?php echo esc_attr( absint( $general['timeout'] ) ); ?>"
-			min="1"
-			step="1"
-			class="small-text"
-		/>
+		<div class="cov-timeout-field">
 
-		<select
-			name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout_unit]"
-		>
+			<input
+				type="number"
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout]"
+				value="<?php echo esc_attr( absint( $general['timeout'] ) ); ?>"
+				min="1"
+				step="1"
+				class="small-text"
+			/>
 
-			<option
-				value="<?php echo esc_attr( COV_Helper::TIMEOUT_MINUTES ); ?>"
-				<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_MINUTES ); ?>
+			<select
+				name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[timeout_unit]"
 			>
-				<?php esc_html_e( 'Minutes', 'cod-verify-for-woocommerce' ); ?>
-			</option>
 
-			<option
-				value="<?php echo esc_attr( COV_Helper::TIMEOUT_HOURS ); ?>"
-				<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_HOURS ); ?>
-			>
-				<?php esc_html_e( 'Hours', 'cod-verify-for-woocommerce' ); ?>
-			</option>
+				<option
+					value="<?php echo esc_attr( COV_Helper::TIMEOUT_MINUTES ); ?>"
+					<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_MINUTES ); ?>
+				>
+					<?php esc_html_e( 'Minutes', 'cod-verify-for-woocommerce' ); ?>
+				</option>
 
-		</select>
+				<option
+					value="<?php echo esc_attr( COV_Helper::TIMEOUT_HOURS ); ?>"
+					<?php selected( $general['timeout_unit'], COV_Helper::TIMEOUT_HOURS ); ?>
+				>
+					<?php esc_html_e( 'Hours', 'cod-verify-for-woocommerce' ); ?>
+				</option>
+
+			</select>
+
+		</div>
 
 		<p class="description">
 			<?php
 			esc_html_e(
-				'Choose how long customers have to verify their COD order.',
+				'Set how long customers have to confirm their Cash on Delivery (COD) order before it is automatically cancelled.',
 				'cod-verify-for-woocommerce'
 			);
 			?>

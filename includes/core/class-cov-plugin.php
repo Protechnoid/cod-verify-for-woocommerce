@@ -81,6 +81,12 @@ class COV_Plugin {
             'enqueue_frontend_assets'
         );
 
+        $this->loader->add_action(
+            'admin_enqueue_scripts',
+            $assets,
+            'enqueue_admin_assets'
+        );
+
         $order_initializer = new COV_Order_Initializer( $token_manager );
 
         $this->loader->add_action(
