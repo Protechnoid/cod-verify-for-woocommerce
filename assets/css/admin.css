@@ -1,0 +1,10 @@
+.cov-timeout-field {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.cov-timeout-field input,
+.cov-timeout-field select {
+	margin: 0;
+}

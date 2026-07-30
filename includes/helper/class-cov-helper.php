@@ -93,9 +93,11 @@ class COV_Helper {
 		return wp_parse_args(
 			$settings,
 			array(
-				'enabled'      => 1,
-				'timeout'      => 6,
-				'timeout_unit' => self::TIMEOUT_HOURS,
+				'enabled'                => 1,
+				'timeout'                => 6,
+				'timeout_unit'           => self::TIMEOUT_HOURS,
+				'notify_merchant'        => 0,
+				'send_processing_email'  => 1,
 			)
 		);
 	}

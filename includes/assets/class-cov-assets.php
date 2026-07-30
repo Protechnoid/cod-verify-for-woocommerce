@@ -31,7 +31,21 @@ class COV_Assets {
             array(),
             COV_VERSION
         );
+    }
 
+    /**
+     * Enqueue admin assets.
+     *
+     * @return void
+     */
+    public function enqueue_admin_assets() {
+
+        wp_enqueue_style(
+            'cov-admin',
+            COV_PLUGIN_URL . 'assets/css/admin.css',
+            array(),
+            COV_VERSION
+        );
     }
 
 }
