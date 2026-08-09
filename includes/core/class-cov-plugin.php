@@ -120,6 +120,12 @@ class COV_Plugin {
             'trigger_customer_confirmation_email'
         );
 
+        $this->loader->add_action(
+            'cov_order_confirmed',
+            $email,
+            'trigger_order_confirmed_emails'
+        );
+
         //Order auto cancel
         $order_auto_cancel = new COV_Order_Auto_Cancel();
 
