@@ -114,6 +114,12 @@ class COV_Confirmation_Handler {
 			)
 		);
 
+		// Notify other plugin components that the order has been confirmed.
+		do_action(
+			'cov_order_confirmed',
+			$order
+		);
+
 		$this->render_template(
 			'success',
 			$order
