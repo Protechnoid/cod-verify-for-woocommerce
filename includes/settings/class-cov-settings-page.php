@@ -59,9 +59,18 @@ class COV_Settings_Page {
 
 		<div class="wrap">
 
-			<h1>
+			<h1 class="cod-verify-h1">
 				<?php esc_html_e( 'COD Verify Settings', 'cod-verify-for-woocommerce' ); ?>
 			</h1>
+
+			<p class="cod-verify-page-description">
+				<?php
+				esc_html_e(
+					'Configure the core settings for COD Verify, including plugin status and the customer verification timeout.',
+					'cod-verify-for-woocommerce'
+				);
+				?>
+			</p>
 
 			<?php $this->render_admin_notices(); ?>
 

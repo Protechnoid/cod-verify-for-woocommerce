@@ -1,10 +1,500 @@
+/**
+ * COD Verify admin settings styles.
+ *
+ * @package COD_Verify_For_WooCommerce
+ */
+
+
+/* ---------------------------------------------------------
+ * Settings page
+ * --------------------------------------------------------- */
+
+.cov-settings-page {
+	max-width: 100%;
+}
+
+.cod-verify-h1 {
+	font-weight: 500 !important;
+	padding-bottom: 0 !important;
+}
+
+.cod-verify-page-description {
+	margin: 4px 0 20px;
+	color: #50575e;
+	font-size: 14px;
+}
+
+.cov-settings-page-header {
+	margin-bottom: 20px;
+}
+
+.cov-settings-page-header h2 {
+	margin: 0 0 8px;
+	font-size: 23px;
+	font-weight: 600;
+}
+
+.cov-settings-page-header p {
+	margin: 0;
+	color: #50575e;
+	font-size: 14px;
+}
+
+
+/* ---------------------------------------------------------
+ * Main settings cards
+ * --------------------------------------------------------- */
+
+.cov-settings-card {
+	margin-bottom: 22px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+	overflow: hidden;
+}
+
+.cov-settings-card-header {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 16px 20px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.cov-settings-card-header h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.cov-settings-card-header p {
+	margin: 4px 0 0;
+	color: #50575e;
+	font-size: 13px;
+}
+
+.cov-settings-card-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 46px;
+	height: 46px;
+	flex: 0 0 46px;
+	border-radius: 50%;
+}
+
+.cov-settings-card-icon-blue {
+	background: #eef3ff;
+	color: #3858e9;
+}
+
+.cov-settings-card-icon .dashicons {
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+
+
+/* ---------------------------------------------------------
+ * General settings
+ * --------------------------------------------------------- */
+
+.cov-settings-card-body {
+	padding: 22px 26px;
+}
+
+.cov-setting-row {
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	gap: 14px;
+	margin-bottom: 22px;
+}
+
+.cov-setting-row:last-child {
+	margin-bottom: 0;
+}
+
+.cov-setting-label {
+	padding-top: 4px;
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.cov-setting-control {
+	min-width: 0;
+}
+
+.cov-checkbox-label {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 8px;
+	color: #2c3338;
+	cursor: pointer;
+	font-weight: 500;
+}
+
+.cov-checkbox-label input[type="checkbox"] {
+	margin: 2px 0 0;
+}
+
 .cov-timeout-field {
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
+	gap: 10px;
 }
 
 .cov-timeout-field input,
 .cov-timeout-field select {
+	height: 42px;
 	margin: 0;
+	box-sizing: border-box;
+	font-weight: 400;
+}
+
+.cov-timeout-field input {
+	width: 66px !important;
+	font-weight: 400;
+}
+
+.cov-timeout-field select {
+	min-width: 126px;
+}
+
+.cov-setting-control .description {
+	max-width: 800px;
+	margin: 8px 0 0;
+	font-weight: 400;
+}
+
+
+/* ---------------------------------------------------------
+ * Email notifications card
+ * --------------------------------------------------------- */
+
+.cov-notification-columns {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.cov-notification-column {
+	min-width: 0;
+	padding: 24px 26px 28px;
+}
+
+.cov-merchant-column {
+	border-right: 1px solid #dcdcde;
+}
+
+.cov-notification-column-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 18px;
+}
+
+.cov-notification-column-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	flex: 0 0 42px;
+	border-radius: 50%;
+}
+
+.cov-notification-column-icon .dashicons {
+	width: 21px;
+	height: 21px;
+	font-size: 21px;
+}
+
+.cov-merchant-icon {
+	background: #f4ecff;
+	color: #6b21a8;
+}
+
+.cov-customer-icon {
+	background: #eaf8f0;
+	color: #238b57;
+}
+
+.cov-notification-column-header h3 {
+	margin: 0 0 5px;
+	font-size: 17px;
+	line-height: 1.3;
+	font-weight: 600;
+}
+
+.cov-merchant-column .cov-notification-column-header h3 {
+	color: #5b1894;
+}
+
+.cov-customer-column .cov-notification-column-header h3 {
+	color: #247a4a;
+}
+
+.cov-notification-column-header p {
+	max-width: 390px;
+	margin: 0;
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+
+/* ---------------------------------------------------------
+ * Optional merchant notification
+ * --------------------------------------------------------- */
+
+.cov-merchant-optional-setting {
+	margin-bottom: 16px;
+	padding: 16px;
+	border: 1px solid #dcc8f7;
+	border-radius: 6px;
+	background: #fcf9ff;
+}
+
+.cov-merchant-checkbox {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.cov-merchant-checkbox input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	flex: 0 0 auto;
+	margin-top: 2px;
+}
+
+.cov-checkbox-content {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.cov-checkbox-content strong {
+	color: #1d2327;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.cov-checkbox-description {
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+
+/* ---------------------------------------------------------
+ * Mandatory merchant notifications
+ * --------------------------------------------------------- */
+
+.cov-mandatory-notifications {
+	padding: 16px;
+	border: 1px solid #dcc8f7;
+	border-radius: 6px;
+	background: #fcf9ff;
+}
+
+.cov-mandatory-header {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	margin-bottom: 12px;
+	color: #1d2327;
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+
+/* Shared merchant information icon */
+
+.cov-mandatory-header .dashicons {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	flex: 0 0 22px;
+	margin: 0;
+	border-radius: 50%;
+	background: #8f4bd8;
+	color: #fff;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+.cov-mandatory-notifications ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.cov-mandatory-notifications li {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin: 9px 0 0;
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.cov-mandatory-notifications li .dashicons {
+	width: 17px;
+	height: 17px;
+	flex: 0 0 17px;
+	margin-top: 1px;
+	color: #6b21a8;
+	font-size: 17px;
+}
+
+.cov-mandatory-notifications li strong {
+	color: #1d2327;
+}
+
+
+/* ---------------------------------------------------------
+ * Customer notification items
+ * --------------------------------------------------------- */
+
+.cov-customer-notification-list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.cov-customer-notification-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 14px;
+	border: 1px solid #b9e5ca;
+	border-radius: 6px;
+	background: #f7fcf9;
+}
+
+.cov-customer-notification-item > .dashicons {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	flex: 0 0 22px;
+	margin: 0;
+	border-radius: 50%;
+	background: #8ed3aa;
+	color: #fff;
+	font-size: 15px;
+	line-height: 22px;
+}
+
+.cov-customer-notification-item strong {
+	display: block;
+	margin-bottom: 3px;
+	color: #1d2327;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.cov-customer-notification-item p {
+	margin: 0;
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+
+/* ---------------------------------------------------------
+ * Customer mandatory information
+ * --------------------------------------------------------- */
+
+.cov-customer-mandatory-note {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 14px;
+	padding: 12px 14px;
+	border: 1px solid #b9e5ca;
+	border-radius: 6px;
+	background: #f7fcf9;
+	color: #1d2327;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+
+/* Same icon shape and size as merchant information icon.
+ * Only the color is different.
+ */
+
+.cov-customer-mandatory-note .dashicons {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	flex: 0 0 22px;
+	margin: 0;
+	border-radius: 50%;
+	background: #4da875;
+	color: #fff;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+
+/* ---------------------------------------------------------
+ * Save button
+ * --------------------------------------------------------- */
+
+.cov-settings-page + .button,
+form > .submit .button {
+	margin-top: 2px;
+}
+
+form > .submit {
+	margin-top: 4px;
+}
+
+form > .submit .button-primary {
+	min-height: 40px;
+	padding: 0 18px;
+}
+
+
+/* ---------------------------------------------------------
+ * Responsive layout
+ * --------------------------------------------------------- */
+
+@media screen and (max-width: 900px) {
+
+	.cov-notification-columns {
+		grid-template-columns: 1fr;
+	}
+
+	.cov-merchant-column {
+		border-right: 0;
+		border-bottom: 1px solid #dcdcde;
+	}
+}
+
+@media screen and (max-width: 782px) {
+
+	.cov-setting-row {
+		grid-template-columns: 1fr;
+		gap: 8px;
+	}
+
+	.cov-settings-card-body,
+	.cov-notification-column {
+		padding: 18px;
+	}
+
+	.cov-settings-card-header {
+		padding: 14px 18px;
+	}
 }
