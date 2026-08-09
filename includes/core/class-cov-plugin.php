@@ -121,6 +121,12 @@ class COV_Plugin {
         );
 
         $this->loader->add_action(
+            'cov_customer_confirmation_ready',
+            $email,
+            'trigger_merchant_awaiting_confirmation_email'
+        );
+
+        $this->loader->add_action(
             'cov_order_confirmed',
             $email,
             'trigger_order_confirmed_emails'
