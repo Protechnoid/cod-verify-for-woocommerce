@@ -5,10 +5,11 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
+/**
+ * Customer confirmation email.
+ */
 class COV_Email_Confirmation extends WC_Email {
 
 	/**
@@ -68,7 +69,6 @@ class COV_Email_Confirmation extends WC_Email {
 			'{confirmation_url}' => COV_Link_Manager::get_confirmation_url( $order ),
 		);
 
-		
 		if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
 			return;
 		}
@@ -90,18 +90,18 @@ class COV_Email_Confirmation extends WC_Email {
 	protected function get_template_args(): array {
 
 		return array(
-			'order'            => $this->object,
-			'email_heading'    => $this->get_heading(),
+			'order'           => $this->object,
+			'email_heading'   => $this->get_heading(),
 			'confirmation_url' => COV_Link_Manager::get_confirmation_url( $this->object ),
-			'email'            => $this,
+			'email'           => $this,
 		);
 	}
 
 	/**
-	* Get HTML content.
-	*
-	* @return string
-	*/
+	 * Get HTML content.
+	 *
+	 * @return string
+	 */
 	public function get_content_html(): string {
 
 		return wc_get_template_html(

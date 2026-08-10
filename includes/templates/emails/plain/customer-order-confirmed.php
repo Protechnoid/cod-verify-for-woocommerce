@@ -4,7 +4,7 @@
  *
  * @var WC_Order $order
  * @var string   $email_heading
- * @var WC_Email   $email
+ * @var WC_Email $email
  */
 
 defined( 'ABSPATH' ) || exit;

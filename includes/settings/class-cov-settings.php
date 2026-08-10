@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings-tab-interface.php';
 
@@ -42,7 +40,7 @@ class COV_Settings {
 	public function __construct() {
 
 		$this->tabs = array(
-			'general' => new COV_Settings_General(),
+			COV_Helper::SETTINGS_GENERAL => new COV_Settings_General(),
 		);
 
 		$this->page = new COV_Settings_Page(

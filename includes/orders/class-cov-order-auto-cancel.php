@@ -5,9 +5,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles automatic cancellation scheduling and cleanup.
@@ -21,7 +19,7 @@ class COV_Order_Auto_Cancel {
 	 *
 	 * @return void
 	 */
-	public function auto_cancel_order( int $order_id ) {
+	public function auto_cancel_order( int $order_id ): void {
 
 		if ( ! COV_Helper::is_plugin_enabled() ) {
 			return;
@@ -44,7 +42,7 @@ class COV_Order_Auto_Cancel {
 				'cod-verify-for-woocommerce'
 			)
 		);
-		
+
 		$order->add_order_note(
 			__(
 				'COD verification timeout reached. Order was automatically cancelled.',
@@ -62,14 +60,19 @@ class COV_Order_Auto_Cancel {
 	 * Unschedule the auto-cancel event when an order leaves
 	 * the pending confirmation status.
 	 *
-	 * @param int      $order_id   Order ID.
-	 * @param string   $from       Previous status.
-	 * @param string   $to         New status.
-	 * @param WC_Order $order      Order object.
+	 * @param int      $order_id Order ID.
+	 * @param string   $from     Previous status.
+	 * @param string   $to       New status.
+	 * @param WC_Order $order    Order object.
 	 *
 	 * @return void
 	 */
-	public function maybe_unschedule_auto_cancel( $order_id, $from, $to, $order ) {
+	public function maybe_unschedule_auto_cancel(
+		int $order_id,
+		string $from,
+		string $to,
+		WC_Order $order
+	): void {
 
 		if ( COV_Helper::ORDER_STATUS_PENDING_CONFIRM !== $from ) {
 			return;

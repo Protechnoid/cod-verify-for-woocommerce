@@ -1,18 +1,22 @@
 <?php
 /**
- * Plugin Deactivator class
- * 
- *@package COD_Verify_For_WooCommerce
+ * Plugin Deactivator.
+ *
+ * @package COD_Verify_For_WooCommerce
  */
 
- if ( !defined( 'ABSPATH' )  ) {
-    exit;
- }
+defined( 'ABSPATH' ) || exit;
 
- class COV_Deactivator {
+/**
+ * Handles plugin deactivation.
+ */
+class COV_Deactivator {
 
-    public static function deactivate() {
-      
-    }
-
- }
+	/**
+	 * Deactivate the plugin.
+	 *
+	 * @return void
+	 */
+	public static function deactivate(): void {
+	}
+}

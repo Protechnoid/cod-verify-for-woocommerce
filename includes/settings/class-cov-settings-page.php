@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Settings Page.
@@ -21,14 +19,14 @@ class COV_Settings_Page {
 	 *
 	 * Array of tab instances keyed by tab slug.
 	 *
-	 * @var array<string, object>
+	 * @var array<string, COV_Settings_Tab_Interface>
 	 */
 	private array $tabs;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param array<string, object> $tabs Settings tab instances.
+	 * @param array<string, COV_Settings_Tab_Interface> $tabs Settings tab instances.
 	 */
 	public function __construct( array $tabs ) {
 
@@ -144,7 +142,7 @@ class COV_Settings_Page {
 
 		return isset( $_GET['tab'] )
 			? sanitize_key( wp_unslash( $_GET['tab'] ) )
-			: 'general';
+			: COV_Helper::SETTINGS_GENERAL;
 	}
 
 	/**

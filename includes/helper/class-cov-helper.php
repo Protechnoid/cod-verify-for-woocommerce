@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Shared plugin constants.
@@ -32,8 +30,7 @@ class COV_Helper {
 	/**
 	 * Cron hook names.
 	 */
-	const CRON_CANCEL_ORDER  = 'cov_cancel_unconfirmed_order';
-	const CRON_SEND_REMINDER = 'cov_send_reminder_email';
+	const CRON_CANCEL_ORDER = 'cov_cancel_unconfirmed_order';
 
 	/**
 	 * Settings option names.
@@ -55,7 +52,6 @@ class COV_Helper {
 	 * Settings tabs.
 	 */
 	const SETTINGS_GENERAL = 'general';
-	const SETTINGS_EMAIL   = 'email';
 
 	/**
 	 * Get the General plugin settings.
@@ -68,27 +64,6 @@ class COV_Helper {
 			self::OPTION_GENERAL_SETTINGS,
 			array()
 		);
-
-		/*
-		 * Backward compatibility.
-		 *
-		 * Older versions stored timeout in seconds.
-		 * Convert it once to the new format.
-		 */
-		if ( isset( $settings['timeout'] ) && ! isset( $settings['timeout_unit'] ) ) {
-
-			$settings['timeout'] = max(
-				1,
-				(int) ( absint( $settings['timeout'] ) / HOUR_IN_SECONDS )
-			);
-
-			$settings['timeout_unit'] = self::TIMEOUT_HOURS;
-
-			update_option(
-				self::OPTION_GENERAL_SETTINGS,
-				$settings
-			);
-		}
 
 		return wp_parse_args(
 			$settings,
@@ -113,7 +88,6 @@ class COV_Helper {
 		return (bool) $settings['enabled'];
 	}
 
-	
 	/**
 	 * Get the token lifetime in seconds.
 	 *
@@ -157,7 +131,7 @@ class COV_Helper {
 				$value,
 				'cod-verify-for-woocommerce'
 			),
-			self::TIMEOUT_HOURS   => _n(
+			self::TIMEOUT_HOURS => _n(
 				'hour',
 				'hours',
 				$value,

@@ -15,9 +15,7 @@ Text Domain: cod-verify-for-woocommerce
 Domain Path: /languages
 */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-} 
+defined( 'ABSPATH' ) || exit;
 
 // Constants
 
