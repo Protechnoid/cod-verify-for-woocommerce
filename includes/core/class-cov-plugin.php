@@ -149,6 +149,12 @@ class COV_Plugin {
             4
         );
 
+        $this->loader->add_action(
+            'cov_order_cancelled',
+            $email,
+            'trigger_order_cancelled_emails'
+        );
+
     }  
 
 }

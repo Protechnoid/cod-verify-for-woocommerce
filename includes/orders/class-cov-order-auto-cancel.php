@@ -44,12 +44,17 @@ class COV_Order_Auto_Cancel {
 				'cod-verify-for-woocommerce'
 			)
 		);
-
+		
 		$order->add_order_note(
 			__(
 				'COD verification timeout reached. Order was automatically cancelled.',
 				'cod-verify-for-woocommerce'
 			)
+		);
+
+		do_action(
+			'cov_order_cancelled',
+			$order
 		);
 	}
 
