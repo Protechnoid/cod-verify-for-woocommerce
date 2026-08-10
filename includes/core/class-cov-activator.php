@@ -1,18 +1,22 @@
 <?php
 /**
- * Plugin Activator class
- * 
- *@package COD_Verify_For_WooCommerce
+ * Plugin Activator.
+ *
+ * @package COD_Verify_For_WooCommerce
  */
 
- if ( !defined( 'ABSPATH' )  ) {
-    exit;
- }
+defined( 'ABSPATH' ) || exit;
 
- class COV_Activator {
+/**
+ * Handles plugin activation.
+ */
+class COV_Activator {
 
-    public static function activate() {
-      
-    }
-
- }
+	/**
+	 * Activate the plugin.
+	 *
+	 * @return void
+	 */
+	public static function activate(): void {
+	}
+}

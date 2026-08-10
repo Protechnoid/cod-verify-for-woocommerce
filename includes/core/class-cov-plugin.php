@@ -6,9 +6,7 @@
  * 
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 require_once COV_PLUGIN_PATH . 'includes/helper/class-cov-helper.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status.php';
@@ -17,7 +15,6 @@ require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-auto-cancel.php'
 require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
-require_once COV_PLUGIN_PATH . 'includes/placeholders/class-cov-placeholder-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
@@ -105,7 +102,7 @@ class COV_Plugin {
             'register_admin_menu'
         );
 
-        //Email
+        // Email
         $email = new COV_Emails();
 
         $this->loader->add_filter(
@@ -132,7 +129,7 @@ class COV_Plugin {
             'trigger_order_confirmed_emails'
         );
 
-        //Order auto cancel
+        // Order auto cancel
         $order_auto_cancel = new COV_Order_Auto_Cancel();
 
         $this->loader->add_action(

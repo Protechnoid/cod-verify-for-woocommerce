@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * General Settings.
@@ -40,16 +38,19 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 		}
 
 		// Check user capability.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return;
 		}
 
-		// Get submitted settings.
+		// Get and sanitize submitted settings.
 		$settings = isset( $_POST[ COV_Helper::OPTION_GENERAL_SETTINGS ] )
-			? (array) wp_unslash( $_POST[ COV_Helper::OPTION_GENERAL_SETTINGS ] )
+			? map_deep(
+				(array) wp_unslash( $_POST[ COV_Helper::OPTION_GENERAL_SETTINGS ] ),
+				'sanitize_text_field'
+			)
 			: array();
 
-		// Sanitize settings.
+		// Validate and normalize settings.
 		$settings = $this->sanitize( $settings );
 
 		// Save settings.
@@ -79,10 +80,6 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	 * @return array Sanitized settings.
 	 */
 	public function sanitize( array $settings ): array {
-
-		if ( ! is_array( $settings ) ) {
-			return array();
-		}
 
 		$timeout = isset( $settings['timeout'] )
 			? max( 1, (int) $settings['timeout'] )
@@ -464,7 +461,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 					<span>
 						<strong>
-							<?php esc_html_e( 'Order Confirmed', 'cod-verify-for-woocommerce' ); ?>
+							<?php esc_html_e( 'New COD Order Confirmed', 'cod-verify-for-woocommerce' ); ?>
 						</strong>
 
 						<?php
@@ -481,7 +478,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 					<span>
 						<strong>
-							<?php esc_html_e( 'Order Cancelled', 'cod-verify-for-woocommerce' ); ?>
+							<?php esc_html_e( 'COD Order Cancelled', 'cod-verify-for-woocommerce' ); ?>
 						</strong>
 
 						<?php

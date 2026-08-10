@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Confirmation Handler class.
@@ -31,13 +29,14 @@ class COV_Confirmation_Handler {
 	public function __construct( COV_Token_Manager $token_manager ) {
 
 		$this->token_manager = $token_manager;
-
 	}
 
 	/**
 	 * Handle confirmation request.
+	 *
+	 * @return void
 	 */
-	public function handle_confirmation_request() {
+	public function handle_confirmation_request(): void {
 
 		if ( ! COV_Helper::is_plugin_enabled() ) {
 			return;
@@ -69,7 +68,7 @@ class COV_Confirmation_Handler {
 		// Validate the verification token.
 		$stored_token = $this->token_manager->get_token( $order );
 
-		if ( $token !== $stored_token ) {
+		if ( ! hash_equals( $stored_token, $token ) ) {
 			$this->render_template( 'invalid_token', $order );
 		}
 
@@ -94,7 +93,7 @@ class COV_Confirmation_Handler {
 		// Store the confirmation timestamp.
 		$order->update_meta_data(
 			COV_Helper::META_CONFIRMED_AT,
-			current_time( 'timestamp' )
+			current_time( 'timestamp', true )
 		);
 
 		// Add an internal order note.
@@ -129,10 +128,15 @@ class COV_Confirmation_Handler {
 	/**
 	 * Render confirmation status template.
 	 *
-	 * @param string        $status Confirmation status.
+	 * @param string       $status Confirmation status.
 	 * @param WC_Order|null $order  Order object.
+	 *
+	 * @return void
 	 */
-	private function render_template( $status, $order = null ) {
+	private function render_template(
+		string $status,
+		?WC_Order $order = null
+	): void {
 
 		$page_title = '';
 		$message    = '';

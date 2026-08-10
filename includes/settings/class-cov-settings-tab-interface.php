@@ -7,9 +7,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Interface for settings tabs.

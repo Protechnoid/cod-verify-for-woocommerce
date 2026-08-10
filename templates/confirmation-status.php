@@ -10,10 +10,7 @@
  * @var WC_Order|null $order 
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
+defined( 'ABSPATH' ) || exit;
 
 get_header(); ?>
 

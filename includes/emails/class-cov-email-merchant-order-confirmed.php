@@ -5,10 +5,11 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
+/**
+ * Merchant order confirmed email.
+ */
 class COV_Email_Merchant_Order_Confirmed extends WC_Email {
 
 	/**

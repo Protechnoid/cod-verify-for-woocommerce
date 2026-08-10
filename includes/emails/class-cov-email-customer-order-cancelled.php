@@ -5,9 +5,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 class COV_Email_Customer_Order_Cancelled extends WC_Email {
 

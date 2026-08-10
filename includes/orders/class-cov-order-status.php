@@ -5,9 +5,7 @@
  * @package COD_Verify_For_WooCommerce
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Handles custom WooCommerce order statuses.
@@ -27,6 +25,7 @@ class COV_Order_Status {
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
+                /* translators: %s: Number of orders with this status. */
                 'label_count' => _n_noop(
                     'Pending Confirmation <span class="count">(%s)</span>',
                     'Pending Confirmation <span class="count">(%s)</span>',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plain Customer Confirmation Email
+ * Plain Customer Confirmation Email.
  *
  * @package COD_Verify_For_WooCommerce
  */
@@ -12,16 +12,16 @@ defined( 'ABSPATH' ) || exit;
  *
  * @var WC_Order               $order
  * @var COV_Email_Confirmation $email
- * @var string                 $email_heading
- * @var string                 $confirmation_url
+ * @var string                $email_heading
+ * @var string                $confirmation_url
  */
 
-echo wp_strip_all_tags( $email_heading ) . "\n\n";
+echo esc_html( wp_strip_all_tags( $email_heading ) ) . "\n\n";
 
-/* translators: %s: Customer first name. */
 printf(
+	/* translators: %s: Customer first name. */
 	esc_html__( 'Hi %s,', 'cod-verify-for-woocommerce' ) . "\n\n",
-	$order->get_billing_first_name()
+	esc_html( $order->get_billing_first_name() )
 );
 
 echo esc_html__(
@@ -41,8 +41,8 @@ echo esc_html__(
 
 echo esc_url( $confirmation_url ) . "\n\n";
 
-/* translators: %s: Verification timeout (e.g. "6 hours" or "30 minutes"). */
 printf(
+	/* translators: %s: Verification timeout (e.g. "6 hours" or "30 minutes"). */
 	esc_html__(
 		'This verification link expires in %s.',
 		'cod-verify-for-woocommerce'
@@ -86,6 +86,8 @@ if ( $email->get_additional_content() ) {
 	echo "\n";
 	echo "----------------------------------------\n\n";
 
-	echo wp_strip_all_tags( $email->get_additional_content() );
+	echo esc_html(
+		wp_strip_all_tags( $email->get_additional_content() )
+	);
 	echo "\n";
 }
