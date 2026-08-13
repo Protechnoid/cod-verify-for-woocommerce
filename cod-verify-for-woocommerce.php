@@ -24,8 +24,25 @@ define( 'COV_PLUGIN_FILE', __FILE__ );
 define( 'COV_PLUGIN_PATH', plugin_dir_path( COV_PLUGIN_FILE ) ); //Filesystem path
 define( 'COV_PLUGIN_URL', plugin_dir_url( COV_PLUGIN_FILE ) ); //Browser URL
 define( 'COV_PLUGIN_BASENAME', plugin_basename( COV_PLUGIN_FILE ) ); //Plugin identifier
- 
 
+/**
+ * Declare WooCommerce compatibility.
+ *
+ * @return void
+ */
+function cov_declare_woocommerce_compatibility(): void {
+	if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+			'custom_order_tables',
+			COV_PLUGIN_FILE,
+			true
+		);
+	}
+}
+
+add_action( 'before_woocommerce_init', 'cov_declare_woocommerce_compatibility' );
+ 
+require_once COV_PLUGIN_PATH . '/includes/helper/class-cov-helper.php';
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-plugin.php';
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-loader.php';
 require_once COV_PLUGIN_PATH . '/includes/core/class-cov-activator.php';
