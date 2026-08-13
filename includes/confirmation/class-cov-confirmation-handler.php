@@ -181,8 +181,60 @@ class COV_Confirmation_Handler {
 				break;
 		}
 
+		nocache_headers();
+
+		// Rank Math and Yoast render their own robots meta tag independently
+		// of WordPress core, so we redirect their output to noindex/nofollow
+		// instead of adding a second, competing meta tag alongside theirs.
+		add_filter( 'rank_math/frontend/robots', array( $this, 'force_noindex_robots_array' ), 999 );
+		add_filter( 'wpseo_robots_array', array( $this, 'force_noindex_robots_array' ), 999 );
+
+		// Only output our own tag when no SEO plugin is present to render one
+		// via the filters above.
+		if ( ! defined( 'RANK_MATH_VERSION' ) && ! defined( 'WPSEO_VERSION' ) ) {
+			add_action( 'wp_head', array( $this, 'output_noindex_meta' ), 1 );
+		}
+
 		require COV_PLUGIN_PATH . 'templates/confirmation-status.php';
 
 		exit;
+	}
+
+	/**
+	 * Force a robots directives array to noindex/nofollow.
+	 *
+	 * Used with Rank Math's `rank_math/frontend/robots` filter and Yoast's
+	 * `wpseo_robots_array` filter, both of which expect an associative
+	 * array such as array( 'index' => 'index', 'follow' => 'follow', ... ).
+	 *
+	 * @param mixed $robots Existing robots directives array from the SEO plugin.
+	 *
+	 * @return array Modified robots directives array.
+	 */
+	public function force_noindex_robots_array( $robots ): array {
+
+		if ( ! is_array( $robots ) ) {
+			$robots = array();
+		}
+
+		$robots['index']  = 'noindex';
+		$robots['follow'] = 'nofollow';
+
+		return $robots;
+	}
+
+	/**
+	 * Output a noindex/nofollow meta tag on the verification status page.
+	 *
+	 * Fallback for sites with no SEO plugin active. Prevents the
+	 * confirm/cancel URL (home_url('/') plus query args) from being
+	 * indexed, and signals crawlers/caches not to treat it as cacheable
+	 * content.
+	 *
+	 * @return void
+	 */
+	public function output_noindex_meta(): void {
+
+		echo '<meta name="robots" content="noindex, nofollow" />' . "\n";
 	}
 }
