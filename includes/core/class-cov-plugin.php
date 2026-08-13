@@ -133,7 +133,7 @@ class COV_Plugin {
         $order_auto_cancel = new COV_Order_Auto_Cancel();
 
         $this->loader->add_action(
-            COV_Helper::CRON_CANCEL_ORDER,
+            COV_Helper::ACTION_CANCEL_ORDER,
             $order_auto_cancel,
             'auto_cancel_order'
         );
