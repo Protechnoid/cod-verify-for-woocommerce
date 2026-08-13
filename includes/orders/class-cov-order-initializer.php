@@ -64,12 +64,18 @@ class COV_Order_Initializer {
 			__( 'Order awaiting customer verification.', 'cod-verify-for-woocommerce' )
 		);
 
-		$hook      = COV_Helper::CRON_CANCEL_ORDER;
-		$timestamp = $expires_at;
-		$args      = array( $order->get_id() );
+		$hook  = COV_Helper::ACTION_CANCEL_ORDER;
+		$args  = array( $order->get_id() );
+		$group = COV_Helper::ACTION_GROUP;
 
-		if ( ! wp_next_scheduled( $hook, $args ) ) {
-			wp_schedule_single_event( $timestamp, $hook, $args );
+		if ( ! as_has_scheduled_action( $hook, $args, $group ) ) {
+			as_schedule_single_action(
+				$expires_at,
+				$hook,
+				$args,
+				$group,
+				true
+			);
 		}
 
 		/**

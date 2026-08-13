@@ -82,13 +82,14 @@ class COV_Order_Auto_Cancel {
 			return;
 		}
 
-		$hook = COV_Helper::CRON_CANCEL_ORDER;
-		$args = array( $order_id );
+		$hook  = COV_Helper::ACTION_CANCEL_ORDER;
+		$args  = array( $order_id );
+		$group = COV_Helper::ACTION_GROUP;
 
-		$timestamp = wp_next_scheduled( $hook, $args );
-
-		if ( false !== $timestamp ) {
-			wp_unschedule_event( $timestamp, $hook, $args );
-		}
+		as_unschedule_all_actions(
+			$hook,
+			$args,
+			$group
+		);
 	}
 }

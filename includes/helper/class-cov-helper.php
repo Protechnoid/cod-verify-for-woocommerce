@@ -28,9 +28,14 @@ class COV_Helper {
 	const META_CONFIRMED_AT  = '_cov_confirmed_at';
 
 	/**
-	 * Cron hook names.
+	 * Action Scheduler hook names.
 	 */
-	const CRON_CANCEL_ORDER = 'cov_cancel_unconfirmed_order';
+	const ACTION_CANCEL_ORDER = 'cov_cancel_unconfirmed_order';
+
+	/**
+	 * Action Scheduler group.
+	 */
+	const ACTION_GROUP = 'cod-verify';
 
 	/**
 	 * Settings option names.
