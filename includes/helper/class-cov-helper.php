@@ -43,6 +43,13 @@ class COV_Helper {
 	const OPTION_GENERAL_SETTINGS = 'cov_settings_general';
 
 	/**
+	 * Transient/option flag: set on activation, tells the plugin to
+	 * reschedule auto-cancel actions for orders left in Pending
+	 * Confirmation once WooCommerce (and Action Scheduler) are ready.
+	 */
+	const OPTION_RESCHEDULE_FLAG = 'cov_reschedule_pending_orders';
+
+	/**
 	 * Verification timeout units.
 	 */
 	const TIMEOUT_MINUTES = 'minutes';

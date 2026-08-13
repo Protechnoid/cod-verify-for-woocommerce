@@ -73,8 +73,7 @@ class COV_Order_Initializer {
 				$expires_at,
 				$hook,
 				$args,
-				$group,
-				true
+				$group
 			);
 		}
 

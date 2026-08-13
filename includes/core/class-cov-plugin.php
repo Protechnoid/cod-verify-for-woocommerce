@@ -43,6 +43,24 @@ class COV_Plugin {
      */
     private function define_hooks() {
 
+        /**
+         * Restore auto-cancel scheduling for orders left in Pending
+         * Confirmation across a deactivate/reactivate cycle. Runs on
+         * wp_loaded rather than woocommerce_init - woocommerce_init
+         * fires from inside WordPress's own init action, before
+         * WooCommerce has finished registering its order-type-to-
+         * classname map, so wc_get_orders() is not yet safe to call
+         * there (throws "Could not find classname for order ID").
+         * wp_loaded fires strictly after init completes, once WooCommerce
+         * is fully ready.
+         */
+        $this->loader->add_action(
+            'wp_loaded',
+            new COV_Activator(),
+            'maybe_reschedule_pending_orders'
+        );
+
+
         $order_status = new COV_Order_Status();
         
         $this->loader->add_action( 
