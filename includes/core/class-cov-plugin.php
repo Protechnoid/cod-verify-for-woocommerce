@@ -15,6 +15,7 @@ require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-auto-cancel.php'
 require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-resend-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
@@ -118,6 +119,20 @@ class COV_Plugin {
             3
         );
 
+        $order_resend_handler = new COV_Order_Resend_Handler( $order_initializer );
+
+        $this->loader->add_filter(
+            'woocommerce_order_actions',
+            $order_resend_handler,
+            'add_order_action'
+        );
+
+        $this->loader->add_action(
+            'woocommerce_order_action_cov_resend_verification',
+            $order_resend_handler,
+            'handle_order_action'
+        );
+
         $settings = new COV_Settings();
 
         $this->loader->add_action(
@@ -151,6 +166,15 @@ class COV_Plugin {
             'cov_order_confirmed',
             $email,
             'trigger_order_confirmed_emails'
+        );
+
+        // Admin resend - customer confirmation email only, deliberately
+        // not wired to trigger_merchant_awaiting_confirmation_email since
+        // this is a merchant-initiated action.
+        $this->loader->add_action(
+            'cov_verification_link_resent',
+            $email,
+            'trigger_customer_confirmation_email'
         );
 
         // Order auto cancel hooks
