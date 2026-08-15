@@ -122,4 +122,36 @@ class COV_Token_Manager {
 
 		return (bool) $order->get_meta( COV_Helper::META_TOKEN_USED );
 	}
+
+	/**
+	 * Invalidates the verification token for an order.
+	 *
+	 * Called when an order leaves Pending Confirmation via a status
+	 * change (merchant action, another plugin, the REST API, etc.) so
+	 * that any previously issued verification link stops working -
+	 * even if the order is later moved back into Pending Confirmation.
+	 *
+	 * This clears the token and its expiration only. It deliberately
+	 * does NOT touch META_TOKEN_USED, since that flag means the customer
+	 * actually confirmed the order - it must stay truthful and is never
+	 * set as a side effect of invalidation.
+	 *
+	 * @param WC_Order $order WooCommerce order object.
+	 *
+	 * @return void
+	 */
+	public function invalidate_token( WC_Order $order ): void {
+
+		$order->update_meta_data(
+			COV_Helper::META_TOKEN,
+			''
+		);
+
+		$order->update_meta_data(
+			COV_Helper::META_TOKEN_EXPIRES,
+			0
+		);
+
+		$order->save();
+	}
 }

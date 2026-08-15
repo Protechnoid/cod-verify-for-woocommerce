@@ -13,6 +13,23 @@ defined( 'ABSPATH' ) || exit;
 class COV_Order_Auto_Cancel {
 
 	/**
+	 * Token manager instance.
+	 *
+	 * @var COV_Token_Manager
+	 */
+	private COV_Token_Manager $token_manager;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param COV_Token_Manager $token_manager Token manager instance.
+	 */
+	public function __construct( COV_Token_Manager $token_manager ) {
+
+		$this->token_manager = $token_manager;
+	}
+
+	/**
 	 * Automatically cancel an unconfirmed order.
 	 *
 	 * @param int $order_id WooCommerce order ID.
@@ -57,8 +74,23 @@ class COV_Order_Auto_Cancel {
 	}
 
 	/**
-	 * Unschedule the auto-cancel event when an order leaves
-	 * the pending confirmation status.
+	 * Terminate verification when an order leaves the Pending
+	 * Confirmation status.
+	 *
+	 * Fires on every status change (manual admin action, bulk action,
+	 * another plugin, the REST API - anything that moves the order via
+	 * woocommerce_order_status_changed), not just ones this plugin
+	 * initiates. Two things happen together, atomically, whenever an
+	 * order leaves Pending Confirmation:
+	 *
+	 * 1. The scheduled auto-cancel Action Scheduler job is unscheduled,
+	 *    so it can't later cancel an order that has already moved on.
+	 * 2. The verification token is invalidated, so any previously
+	 *    issued link stops working immediately - even if the order is
+	 *    later moved back into Pending Confirmation. Verification is
+	 *    never silently restarted on re-entry; only an explicit admin
+	 *    "Resend verification link" action can issue a working link
+	 *    again.
 	 *
 	 * @param int      $order_id Order ID.
 	 * @param string   $from     Previous status.
@@ -67,7 +99,7 @@ class COV_Order_Auto_Cancel {
 	 *
 	 * @return void
 	 */
-	public function maybe_unschedule_auto_cancel(
+	public function handle_pending_confirmation_exit(
 		int $order_id,
 		string $from,
 		string $to,
@@ -91,5 +123,7 @@ class COV_Order_Auto_Cancel {
 			$args,
 			$group
 		);
+
+		$this->token_manager->invalidate_token( $order );
 	}
 }
