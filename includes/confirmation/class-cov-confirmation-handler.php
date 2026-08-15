@@ -65,6 +65,18 @@ class COV_Confirmation_Handler {
 			$this->render_template( 'invalid_order' );
 		}
 
+		// Ensure the order is still waiting for confirmation. Checked
+		// first, ahead of token mechanics: this is the authoritative
+		// signal for whether verification still applies at all, and
+		// covers a status change invalidating the token (see
+		// COV_Order_Auto_Cancel::handle_pending_confirmation_exit())
+		// with an accurate, status-aware message rather than a generic
+		// "invalid token" result.
+		if ( COV_Helper::ORDER_STATUS_PENDING_CONFIRM !== $order->get_status() ) {
+			$this->log_stale_link_note( $order );
+			$this->render_template( 'invalid_status', $order );
+		}
+
 		// Validate the verification token.
 		$stored_token = $this->token_manager->get_token( $order );
 
@@ -80,11 +92,6 @@ class COV_Confirmation_Handler {
 		// Ensure the verification link has not expired.
 		if ( $this->token_manager->is_token_expired( $order ) ) {
 			$this->render_template( 'expired', $order );
-		}
-
-		// Ensure the order is still waiting for confirmation.
-		if ( COV_Helper::ORDER_STATUS_PENDING_CONFIRM !== $order->get_status() ) {
-			$this->render_template( 'invalid_status', $order );
 		}
 
 		// Mark the verification token as used.
@@ -126,6 +133,64 @@ class COV_Confirmation_Handler {
 	}
 
 	/**
+	 * Log an order note when a customer clicks a verification link
+	 * for an order that is no longer in Pending Confirmation.
+	 *
+	 * Gives the merchant an audit trail if a customer reports a
+	 * "broken" or "expired" link after the order's status changed.
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return void
+	 */
+	private function log_stale_link_note( WC_Order $order ): void {
+
+		$order->add_order_note(
+			sprintf(
+				/* translators: %s: current order status label. */
+				__(
+					'Customer clicked the verification link, but the order status had already changed to "%s". No action was taken.',
+					'cod-verify-for-woocommerce'
+				),
+				wc_get_order_status_name( $order->get_status() )
+			)
+		);
+	}
+
+	/**
+	 * Build a status-aware message/icon pair for a stale verification
+	 * link, based on what the order's current status actually is.
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return array{message: string, icon: string}
+	 */
+	private function get_status_aware_result( WC_Order $order ): array {
+
+		switch ( $order->get_status() ) {
+
+			case 'cancelled':
+				return array(
+					'message' => __( 'This order has been cancelled and no longer needs confirmation.', 'cod-verify-for-woocommerce' ),
+					'icon'    => 'info',
+				);
+
+			case 'processing':
+			case 'completed':
+				return array(
+					'message' => __( 'Good news — this order is already being processed. No action needed.', 'cod-verify-for-woocommerce' ),
+					'icon'    => 'success',
+				);
+
+			default:
+				return array(
+					'message' => __( 'This link is no longer valid for this order.', 'cod-verify-for-woocommerce' ),
+					'icon'    => 'error',
+				);
+		}
+	}
+
+	/**
 	 * Render confirmation status template.
 	 *
 	 * @param string       $status Confirmation status.
@@ -158,8 +223,9 @@ class COV_Confirmation_Handler {
 
 			case 'invalid_status':
 				$page_title = __( 'Invalid Order Status', 'cod-verify-for-woocommerce' );
-				$message    = __( 'This order can no longer be confirmed.', 'cod-verify-for-woocommerce' );
-				$icon       = 'error';
+				$status_result = $this->get_status_aware_result( $order );
+				$message    = $status_result['message'];
+				$icon       = $status_result['icon'];
 				break;
 
 			case 'invalid_token':

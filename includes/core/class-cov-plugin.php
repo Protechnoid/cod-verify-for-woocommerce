@@ -148,7 +148,7 @@ class COV_Plugin {
         );
 
         // Order auto cancel
-        $order_auto_cancel = new COV_Order_Auto_Cancel();
+        $order_auto_cancel = new COV_Order_Auto_Cancel( $token_manager );
 
         $this->loader->add_action(
             COV_Helper::ACTION_CANCEL_ORDER,
@@ -159,7 +159,7 @@ class COV_Plugin {
         $this->loader->add_action(
             'woocommerce_order_status_changed',
             $order_auto_cancel,
-            'maybe_unschedule_auto_cancel',
+            'handle_pending_confirmation_exit',
             10,
             4
         );
