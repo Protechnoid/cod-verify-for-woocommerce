@@ -74,14 +74,42 @@ class COV_Order_Auto_Cancel {
 	}
 
 	/**
+	 * Unschedule the pending auto-cancel Action Scheduler job for an
+	 * order, if one exists.
+	 *
+	 * Safe to call even when nothing is scheduled. Shared by
+	 * handle_pending_confirmation_exit() (external/manual status
+	 * changes) and COV_Confirmation_Handler (the customer's own
+	 * successful confirmation) - both need the stale job cleaned up,
+	 * but only the former should also invalidate the token.
+	 *
+	 * @param int $order_id WooCommerce order ID.
+	 *
+	 * @return void
+	 */
+	public function unschedule_auto_cancel( int $order_id ): void {
+
+		as_unschedule_all_actions(
+			COV_Helper::ACTION_CANCEL_ORDER,
+			array( $order_id ),
+			COV_Helper::ACTION_GROUP
+		);
+	}
+
+	/**
 	 * Terminate verification when an order leaves the Pending
-	 * Confirmation status.
+	 * Confirmation status via an external/manual status change.
 	 *
 	 * Fires on every status change (manual admin action, bulk action,
 	 * another plugin, the REST API - anything that moves the order via
-	 * woocommerce_order_status_changed), not just ones this plugin
-	 * initiates. Two things happen together, atomically, whenever an
-	 * order leaves Pending Confirmation:
+	 * woocommerce_order_status_changed). COV_Confirmation_Handler
+	 * temporarily detaches this specific listener around its own
+	 * Pending Confirmation -> Processing transition (the customer's own
+	 * successful confirmation), so this method only ever runs for
+	 * changes this plugin did not itself initiate via a confirmed link.
+	 *
+	 * Two things happen together, atomically, whenever an order leaves
+	 * Pending Confirmation this way:
 	 *
 	 * 1. The scheduled auto-cancel Action Scheduler job is unscheduled,
 	 *    so it can't later cancel an order that has already moved on.
@@ -114,15 +142,7 @@ class COV_Order_Auto_Cancel {
 			return;
 		}
 
-		$hook  = COV_Helper::ACTION_CANCEL_ORDER;
-		$args  = array( $order_id );
-		$group = COV_Helper::ACTION_GROUP;
-
-		as_unschedule_all_actions(
-			$hook,
-			$args,
-			$group
-		);
+		$this->unschedule_auto_cancel( $order_id );
 
 		$this->token_manager->invalidate_token( $order );
 	}

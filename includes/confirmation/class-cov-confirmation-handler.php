@@ -22,13 +22,31 @@ class COV_Confirmation_Handler {
 	private COV_Token_Manager $token_manager;
 
 	/**
+	 * Order Auto Cancel instance.
+	 *
+	 * Used to temporarily detach the generic
+	 * woocommerce_order_status_changed exit-listener around this
+	 * class's own Pending Confirmation -> Processing transition, so a
+	 * genuine customer confirmation never has its token metadata wiped
+	 * by the listener meant for external/manual status changes.
+	 *
+	 * @var COV_Order_Auto_Cancel
+	 */
+	private COV_Order_Auto_Cancel $order_auto_cancel;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param COV_Token_Manager $token_manager Token manager instance.
+	 * @param COV_Token_Manager    $token_manager     Token manager instance.
+	 * @param COV_Order_Auto_Cancel $order_auto_cancel Order auto cancel instance.
 	 */
-	public function __construct( COV_Token_Manager $token_manager ) {
+	public function __construct(
+		COV_Token_Manager $token_manager,
+		COV_Order_Auto_Cancel $order_auto_cancel
+	) {
 
-		$this->token_manager = $token_manager;
+		$this->token_manager     = $token_manager;
+		$this->order_auto_cancel = $order_auto_cancel;
 	}
 
 	/**
@@ -112,13 +130,48 @@ class COV_Confirmation_Handler {
 		);
 
 		// Move the order to Processing.
-		$order->update_status(
-			'processing',
-			__(
-				'Order confirmed by customer via verification link.',
-				'cod-verify-for-woocommerce'
-			)
+		//
+		// This transition is the customer's own successful verification,
+		// not an external/manual status change - so the generic exit
+		// listener (which invalidates the token for external changes)
+		// is temporarily detached around this specific call. This keeps
+		// _cov_token and _cov_token_expires intact as a record of what
+		// was actually used to confirm, while _cov_token_used remains
+		// the sole, truthful signal that the customer confirmed.
+		remove_action(
+			'woocommerce_order_status_changed',
+			array( $this->order_auto_cancel, 'handle_pending_confirmation_exit' ),
+			10
 		);
+
+		try {
+
+			$order->update_status(
+				'processing',
+				__(
+					'Order confirmed by customer via verification link.',
+					'cod-verify-for-woocommerce'
+				)
+			);
+
+		} finally {
+
+			add_action(
+				'woocommerce_order_status_changed',
+				array( $this->order_auto_cancel, 'handle_pending_confirmation_exit' ),
+				10,
+				4
+			);
+		}
+
+		// Clean up the now-stale scheduled auto-cancel job. This is
+		// always safe and always correct to do here - the order is
+		// confirmed, so it should never be auto-cancelled. This is
+		// deliberately separate from token invalidation: the listener
+		// above was detached specifically to preserve the token as a
+		// record of what confirmed the order, but the scheduled job
+		// itself has no such reason to be kept around.
+		$this->order_auto_cancel->unschedule_auto_cancel( $order->get_id() );
 
 		// Notify other plugin components that the order has been confirmed.
 		do_action(
