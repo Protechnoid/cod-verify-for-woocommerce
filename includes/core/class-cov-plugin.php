@@ -77,7 +77,13 @@ class COV_Plugin {
 
         $token_manager = new COV_Token_Manager();
 
-        $confirmation_handler = new COV_Confirmation_Handler( $token_manager );
+        // Order auto cancel — created before COV_Confirmation_Handler
+        // since the confirmation handler needs this exact instance
+        // injected, to temporarily detach its status-changed listener
+        // around the customer-confirmation transition.
+        $order_auto_cancel = new COV_Order_Auto_Cancel( $token_manager );
+
+        $confirmation_handler = new COV_Confirmation_Handler( $token_manager, $order_auto_cancel );
 
         $assets = new COV_Assets();
 
@@ -147,9 +153,7 @@ class COV_Plugin {
             'trigger_order_confirmed_emails'
         );
 
-        // Order auto cancel
-        $order_auto_cancel = new COV_Order_Auto_Cancel( $token_manager );
-
+        // Order auto cancel hooks
         $this->loader->add_action(
             COV_Helper::ACTION_CANCEL_ORDER,
             $order_auto_cancel,
