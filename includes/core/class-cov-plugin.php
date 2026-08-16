@@ -16,6 +16,7 @@ require_once COV_PLUGIN_PATH . 'includes/confirmation/class-cov-confirmation-han
 require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-resend-handler.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-manual-confirm-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
@@ -127,9 +128,24 @@ class COV_Plugin {
             'add_order_action'
         );
 
+        //Order manual confirmation handler
         $this->loader->add_action(
             'woocommerce_order_action_cov_resend_verification',
             $order_resend_handler,
+            'handle_order_action'
+        );
+
+        $order_manual_confirm_handler = new COV_Order_Manual_Confirm_Handler( $token_manager, $order_auto_cancel );
+
+        $this->loader->add_filter(
+            'woocommerce_order_actions',
+            $order_manual_confirm_handler,
+            'add_order_action'
+        );
+
+        $this->loader->add_action(
+            'woocommerce_order_action_cov_manual_confirm',
+            $order_manual_confirm_handler,
             'handle_order_action'
         );
 

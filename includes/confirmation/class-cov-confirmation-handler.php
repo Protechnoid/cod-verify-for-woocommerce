@@ -115,10 +115,15 @@ class COV_Confirmation_Handler {
 		// Mark the verification token as used.
 		$this->token_manager->mark_token_used( $order );
 
-		// Store the confirmation timestamp.
+		// Store the confirmation timestamp and source.
 		$order->update_meta_data(
 			COV_Helper::META_CONFIRMED_AT,
 			current_time( 'timestamp', true )
+		);
+
+		$order->update_meta_data(
+			COV_Helper::META_CONFIRMED_VIA,
+			'link'
 		);
 
 		// Add an internal order note.
