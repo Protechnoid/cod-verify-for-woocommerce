@@ -52,13 +52,46 @@ class COV_Order_Auto_Cancel {
 			return;
 		}
 
-		$order->update_status(
-			'cancelled',
-			__(
-				'Order automatically cancelled because the customer did not verify the COD order before the verification timeout.',
-				'cod-verify-for-woocommerce'
-			)
+		$order->update_meta_data(
+			COV_Helper::META_CANCELLED_VIA,
+			'auto_cancel'
 		);
+
+		$order->save();
+
+		// Detach the generic exit-listener around this transition,
+		// same reason COV_Confirmation_Handler and
+		// COV_Order_Manual_Confirm_Handler do: this is the plugin's
+		// own deliberate cancellation (timeout reached), not an
+		// external/manual status change, so it sets its own
+		// META_CANCELLED_VIA signal explicitly below rather than
+		// being overwritten by the listener meant for genuinely
+		// external changes.
+		remove_action(
+			'woocommerce_order_status_changed',
+			array( $this, 'handle_pending_confirmation_exit' ),
+			10
+		);
+
+		try {
+
+			$order->update_status(
+				'cancelled',
+				__(
+					'Order automatically cancelled because the customer did not verify the COD order before the verification timeout.',
+					'cod-verify-for-woocommerce'
+				)
+			);
+
+		} finally {
+
+			add_action(
+				'woocommerce_order_status_changed',
+				array( $this, 'handle_pending_confirmation_exit' ),
+				10,
+				4
+			);
+		}
 
 		$order->add_order_note(
 			__(
@@ -66,6 +99,10 @@ class COV_Order_Auto_Cancel {
 				'cod-verify-for-woocommerce'
 			)
 		);
+
+		// Invalidate the token explicitly, since the generic listener
+		// that would normally do this was detached above.
+		$this->token_manager->invalidate_token( $order );
 
 		do_action(
 			'cov_order_cancelled',
@@ -98,18 +135,18 @@ class COV_Order_Auto_Cancel {
 
 	/**
 	 * Terminate verification when an order leaves the Pending
-	 * Confirmation status via an external/manual status change.
+	 * Confirmation status via a genuinely external/manual status
+	 * change - anything NOT already handled by one of the plugin's
+	 * own deliberate transitions (customer link confirmation, admin
+	 * manual confirmation, or the auto-cancel timeout), all three of
+	 * which detach this exact listener around their own status change
+	 * and record their own outcome explicitly.
 	 *
-	 * Fires on every status change (manual admin action, bulk action,
-	 * another plugin, the REST API - anything that moves the order via
-	 * woocommerce_order_status_changed). COV_Confirmation_Handler
-	 * temporarily detaches this specific listener around its own
-	 * Pending Confirmation -> Processing transition (the customer's own
-	 * successful confirmation), so this method only ever runs for
-	 * changes this plugin did not itself initiate via a confirmed link.
+	 * Fires on every other status change reaching this hook (manual
+	 * admin action, bulk action, another plugin, the REST API).
 	 *
-	 * Two things happen together, atomically, whenever an order leaves
-	 * Pending Confirmation this way:
+	 * Three things happen together, atomically, whenever an order
+	 * leaves Pending Confirmation this way:
 	 *
 	 * 1. The scheduled auto-cancel Action Scheduler job is unscheduled,
 	 *    so it can't later cancel an order that has already moved on.
@@ -119,6 +156,9 @@ class COV_Order_Auto_Cancel {
 	 *    never silently restarted on re-entry; only an explicit admin
 	 *    "Resend verification link" action can issue a working link
 	 *    again.
+	 * 3. META_CANCELLED_VIA is recorded as 'external', distinguishing
+	 *    this from the plugin's own auto-cancel timeout for the
+	 *    order-screen status indicator.
 	 *
 	 * @param int      $order_id Order ID.
 	 * @param string   $from     Previous status.
@@ -145,5 +185,12 @@ class COV_Order_Auto_Cancel {
 		$this->unschedule_auto_cancel( $order_id );
 
 		$this->token_manager->invalidate_token( $order );
+
+		$order->update_meta_data(
+			COV_Helper::META_CANCELLED_VIA,
+			'external'
+		);
+
+		$order->save();
 	}
 }
