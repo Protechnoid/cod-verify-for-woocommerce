@@ -26,6 +26,7 @@ class COV_Helper {
 	const META_TOKEN_EXPIRES = '_cov_token_expires';
 	const META_TOKEN_USED    = '_cov_token_used';
 	const META_CONFIRMED_AT  = '_cov_confirmed_at';
+	const META_CONFIRMED_VIA = '_cov_confirmed_via';
 
 	/**
 	 * Action Scheduler hook names.

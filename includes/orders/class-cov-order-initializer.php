@@ -76,8 +76,9 @@ class COV_Order_Initializer {
 	 * Resend the verification link for an order stuck in Pending
 	 * Confirmation - e.g. one whose token was invalidated by an
 	 * external/manual status change and later moved back into Pending
-	 * Confirmation (which never auto-restarts verification), or one
-	 * where the merchant simply wants to extend the deadline.
+	 * Confirmation (which never auto-restarts verification), one that
+	 * was already confirmed once and manually moved back, or one where
+	 * the merchant simply wants to extend the deadline.
 	 *
 	 * Regenerates the token and expiry via the same setup logic used
 	 * at checkout, reschedules the auto-cancel job against the new
@@ -130,12 +131,19 @@ class COV_Order_Initializer {
 
 	/**
 	 * Generate and store a fresh verification token and expiry for an
-	 * order, and (re)schedule its auto-cancel Action Scheduler job
-	 * against the new expiry.
+	 * order, reset the token-used flag, and (re)schedule its
+	 * auto-cancel Action Scheduler job against the new expiry.
 	 *
 	 * Shared by initialize_order() (first-time setup at checkout) and
 	 * resend_verification_link() (admin resend), so both paths always
 	 * stay in sync.
+	 *
+	 * The token-used flag is explicitly reset here (not just left as
+	 * the checkout-time default of unset/falsy), because resend can
+	 * run on an order that was already confirmed once before being
+	 * manually moved back into Pending Confirmation - without this
+	 * reset, a stale "already used" flag would block the customer's
+	 * brand new link from working.
 	 *
 	 * Any existing scheduled job for this order is unscheduled first -
 	 * safe/idempotent when nothing is scheduled (e.g. checkout, or a
@@ -153,6 +161,8 @@ class COV_Order_Initializer {
 		$token = $this->token_manager->generate_token();
 
 		$this->token_manager->store_token( $order, $token );
+
+		$this->token_manager->reset_token_used( $order );
 
 		$expires_at = current_time( 'timestamp', true ) + COV_Helper::get_token_lifetime();
 

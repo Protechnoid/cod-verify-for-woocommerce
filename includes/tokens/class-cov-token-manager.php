@@ -112,6 +112,32 @@ class COV_Token_Manager {
 	}
 
 	/**
+	 * Resets the token-used flag for an order.
+	 *
+	 * Called whenever a fresh token is issued (checkout, resend), so a
+	 * newly issued token is never blocked by a stale "already used"
+	 * flag left over from a prior confirmation on the same order - e.g.
+	 * an order manually moved back into Pending Confirmation after
+	 * already being confirmed once (via link or admin override), then
+	 * resent. Without this, the customer's new link would incorrectly
+	 * show "This order has already been confirmed" instead of actually
+	 * working.
+	 *
+	 * @param WC_Order $order WooCommerce order object.
+	 *
+	 * @return void
+	 */
+	public function reset_token_used( WC_Order $order ): void {
+
+		$order->update_meta_data(
+			COV_Helper::META_TOKEN_USED,
+			0
+		);
+
+		$order->save();
+	}
+
+	/**
 	 * Checks whether the token has already been used.
 	 *
 	 * @param WC_Order $order WooCommerce order object.
