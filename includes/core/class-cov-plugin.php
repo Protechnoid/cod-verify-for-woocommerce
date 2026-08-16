@@ -17,6 +17,7 @@ require_once COV_PLUGIN_PATH . 'includes/assets/class-cov-assets.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-resend-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-manual-confirm-handler.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status-metabox.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
@@ -147,6 +148,14 @@ class COV_Plugin {
             'woocommerce_order_action_cov_manual_confirm',
             $order_manual_confirm_handler,
             'handle_order_action'
+        );
+
+        $order_status_metabox = new COV_Order_Status_Metabox( $token_manager );
+
+        $this->loader->add_action(
+            'add_meta_boxes',
+            $order_status_metabox,
+            'register_metabox'
         );
 
         $settings = new COV_Settings();
