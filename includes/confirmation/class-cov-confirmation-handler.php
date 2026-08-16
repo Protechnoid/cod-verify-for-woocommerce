@@ -115,7 +115,7 @@ class COV_Confirmation_Handler {
 		// Mark the verification token as used.
 		$this->token_manager->mark_token_used( $order );
 
-		// Store the confirmation timestamp and source.
+		// Store the confirmation timestamp.
 		$order->update_meta_data(
 			COV_Helper::META_CONFIRMED_AT,
 			current_time( 'timestamp', true )
@@ -216,12 +216,20 @@ class COV_Confirmation_Handler {
 	}
 
 	/**
-	 * Build a status-aware message/icon pair for a stale verification
-	 * link, based on what the order's current status actually is.
+	 * Build a status-aware title/message/icon set for a stale
+	 * verification link, based on what the order's current status
+	 * actually is.
+	 *
+	 * The title is included here (not hardcoded in render_template())
+	 * so it always stays in sync with the message and icon - e.g. a
+	 * processing/completed order gets the reassuring "Order Already
+	 * Processing" title alongside its success icon and message,
+	 * instead of the alarming "Invalid Order Status" title that only
+	 * fits the genuine invalid/generic case.
 	 *
 	 * @param WC_Order $order Order object.
 	 *
-	 * @return array{message: string, icon: string}
+	 * @return array{title: string, message: string, icon: string}
 	 */
 	private function get_status_aware_result( WC_Order $order ): array {
 
@@ -229,6 +237,7 @@ class COV_Confirmation_Handler {
 
 			case 'cancelled':
 				return array(
+					'title'   => __( 'Order Cancelled', 'cod-verify-for-woocommerce' ),
 					'message' => __( 'This order has been cancelled and no longer needs confirmation.', 'cod-verify-for-woocommerce' ),
 					'icon'    => 'info',
 				);
@@ -236,12 +245,14 @@ class COV_Confirmation_Handler {
 			case 'processing':
 			case 'completed':
 				return array(
+					'title'   => __( 'Order Already Processing', 'cod-verify-for-woocommerce' ),
 					'message' => __( 'Good news — this order is already being processed. No action needed.', 'cod-verify-for-woocommerce' ),
 					'icon'    => 'success',
 				);
 
 			default:
 				return array(
+					'title'   => __( 'Invalid Order Status', 'cod-verify-for-woocommerce' ),
 					'message' => __( 'This link is no longer valid for this order.', 'cod-verify-for-woocommerce' ),
 					'icon'    => 'error',
 				);
@@ -280,10 +291,10 @@ class COV_Confirmation_Handler {
 				break;
 
 			case 'invalid_status':
-				$page_title = __( 'Invalid Order Status', 'cod-verify-for-woocommerce' );
 				$status_result = $this->get_status_aware_result( $order );
-				$message    = $status_result['message'];
-				$icon       = $status_result['icon'];
+				$page_title    = $status_result['title'];
+				$message       = $status_result['message'];
+				$icon          = $status_result['icon'];
 				break;
 
 			case 'invalid_token':
