@@ -83,6 +83,39 @@ class COV_Email_Customer_Order_Confirmed extends WC_Email {
 	}
 
 	/**
+	 * Always report this email as enabled.
+	 *
+	 * Sending is controlled exclusively by this plugin's own Settings
+	 * page (see COV_Settings_General / COV_Emails), not by
+	 * WooCommerce's native per-email Enable/Disable toggle - this
+	 * override prevents that native toggle from creating a second,
+	 * conflicting on/off switch for the same email.
+	 *
+	 * @return bool
+	 */
+	public function is_enabled(): bool {
+
+		return true;
+	}
+
+	/**
+	 * Remove the native Enable/Disable field from this email's
+	 * WooCommerce > Settings > Emails screen.
+	 *
+	 * Prevents a redundant, non-functional toggle from appearing
+	 * there - this email's on/off state is controlled solely by this
+	 * plugin's own Settings page.
+	 *
+	 * @return void
+	 */
+	public function init_form_fields(): void {
+
+		parent::init_form_fields();
+
+		unset( $this->form_fields['enabled'] );
+	}
+
+	/**
 	 * Get template arguments.
 	 *
 	 * @return array

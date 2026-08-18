@@ -22,12 +22,12 @@ class COV_Helper {
 	/**
 	 * Order meta keys.
 	 */
-	const META_TOKEN         = '_cov_token';
-	const META_TOKEN_EXPIRES = '_cov_token_expires';
-	const META_TOKEN_USED    = '_cov_token_used';
-	const META_CONFIRMED_AT  = '_cov_confirmed_at';
-	const META_CONFIRMED_VIA = '_cov_confirmed_via';
-	const META_CANCELLED_VIA = '_cov_cancelled_via';
+	const META_TOKEN          = '_cov_token';
+	const META_TOKEN_EXPIRES  = '_cov_token_expires';
+	const META_TOKEN_USED     = '_cov_token_used';
+	const META_CONFIRMED_AT   = '_cov_confirmed_at';
+	const META_CONFIRMED_VIA  = '_cov_confirmed_via';
+	const META_CANCELLED_VIA  = '_cov_cancelled_via';
 
 	/**
 	 * Action Scheduler hook names.
@@ -82,10 +82,19 @@ class COV_Helper {
 		return wp_parse_args(
 			$settings,
 			array(
-				'enabled'         => 1,
-				'timeout'         => 6,
-				'timeout_unit'    => self::TIMEOUT_HOURS,
-				'notify_merchant' => 0,
+				'enabled'                  => 1,
+				'timeout'                  => 6,
+				'timeout_unit'             => self::TIMEOUT_HOURS,
+				'notify_merchant'          => 1,
+				// Default all controllable notification emails to
+				// enabled, so upgrading to this setting doesn't
+				// silently change behavior for existing installs -
+				// these emails always sent unconditionally before
+				// this setting existed.
+				'merchant_order_confirmed' => 1,
+				'merchant_order_cancelled' => 1,
+				'customer_order_confirmed' => 1,
+				'customer_order_cancelled' => 1,
 			)
 		);
 	}
