@@ -187,7 +187,7 @@
 }
 
 .cov-merchant-column {
-	border-right: 1px solid #dcdcde;
+	border-inline-end: 1px solid #dcdcde;
 }
 
 .cov-notification-column-header {
@@ -351,7 +351,7 @@ form > .submit .button-primary {
 	}
 
 	.cov-merchant-column {
-		border-right: 0;
+		border-inline-end: 0;
 		border-bottom: 1px solid #dcdcde;
 	}
 }
