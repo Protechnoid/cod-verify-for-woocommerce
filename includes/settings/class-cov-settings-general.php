@@ -96,10 +96,14 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 				: COV_Helper::TIMEOUT_HOURS;
 
 		return array(
-			'enabled'         => ! empty( $settings['enabled'] ) ? 1 : 0,
-			'timeout'         => $timeout,
-			'timeout_unit'    => $timeout_unit,
-			'notify_merchant' => ! empty( $settings['notify_merchant'] ) ? 1 : 0,
+			'enabled'                  => ! empty( $settings['enabled'] ) ? 1 : 0,
+			'timeout'                  => $timeout,
+			'timeout_unit'             => $timeout_unit,
+			'notify_merchant'          => ! empty( $settings['notify_merchant'] ) ? 1 : 0,
+			'merchant_order_confirmed' => ! empty( $settings['merchant_order_confirmed'] ) ? 1 : 0,
+			'merchant_order_cancelled' => ! empty( $settings['merchant_order_cancelled'] ) ? 1 : 0,
+			'customer_order_confirmed' => ! empty( $settings['customer_order_confirmed'] ) ? 1 : 0,
+			'customer_order_cancelled' => ! empty( $settings['customer_order_cancelled'] ) ? 1 : 0,
 		);
 	}
 
@@ -215,11 +219,9 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 							<div class="cov-notification-column-header">
 
-								<div class="cov-notification-column-icon cov-merchant-icon">
-									<span class="dashicons dashicons-store"></span>
-								</div>
+								<span class="dashicons dashicons-store"></span>
 
-								<div>
+								<div class="cov-notification-column-header-text">
 
 									<h3>
 										<?php esc_html_e( 'Merchant (Store Owner) Notifications', 'cod-verify-for-woocommerce' ); ?>
@@ -228,7 +230,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 									<p>
 										<?php
 										esc_html_e(
-											'Configure email notifications sent to the store owner during the COD verification process.',
+											'Emails sent to the store owner during the COD verification process.',
 											'cod-verify-for-woocommerce'
 										);
 										?>
@@ -237,8 +239,6 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 								</div>
 
 							</div>
-
-							<?php $this->render_notify_merchant_field(); ?>
 
 							<?php $this->render_merchant_notifications(); ?>
 
@@ -250,11 +250,9 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 							<div class="cov-notification-column-header">
 
-								<div class="cov-notification-column-icon cov-customer-icon">
-									<span class="dashicons dashicons-admin-users"></span>
-								</div>
+								<span class="dashicons dashicons-admin-users"></span>
 
-								<div>
+								<div class="cov-notification-column-header-text">
 
 									<h3>
 										<?php esc_html_e( 'Customer Notifications', 'cod-verify-for-woocommerce' ); ?>
@@ -263,7 +261,7 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 									<p>
 										<?php
 										esc_html_e(
-											'Customer email notifications are automatically sent during the COD verification process.',
+											'The verification email is always sent. Other customer emails below can be turned off.',
 											'cod-verify-for-woocommerce'
 										);
 										?>
@@ -382,59 +380,9 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	}
 
 	/**
-	 * Render the optional merchant awaiting verification notification.
-	 *
-	 * @return void
-	 */
-	private function render_notify_merchant_field(): void {
-
-		$general = $this->get_settings();
-
-		?>
-
-		<div class="cov-merchant-optional-setting">
-
-			<label class="cov-checkbox-label cov-merchant-checkbox">
-
-				<input
-					type="hidden"
-					name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[notify_merchant]"
-					value="0"
-				/>
-
-				<input
-					type="checkbox"
-					name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[notify_merchant]"
-					value="1"
-					<?php checked( ! empty( $general['notify_merchant'] ) ); ?>
-				/>
-
-				<span class="cov-checkbox-content">
-
-					<strong>
-						<?php esc_html_e( 'Notify the store owner when a new COD order is awaiting customer verification.', 'cod-verify-for-woocommerce' ); ?>
-					</strong>
-
-					<span class="cov-checkbox-description">
-						<?php
-						esc_html_e(
-							'Receive an email when a new Cash on Delivery order is placed and is awaiting customer verification.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</span>
-
-				</span>
-
-			</label>
-
-		</div>
-
-		<?php
-	}
-
-	/**
-	 * Render mandatory merchant notifications.
+	 * Render every merchant notification option as one uniform list:
+	 * the optional "awaiting verification" notice plus the two
+	 * genuinely optional order-outcome emails.
 	 *
 	 * @return void
 	 */
@@ -442,55 +390,27 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 		?>
 
-		<div class="cov-mandatory-notifications cov-merchant-mandatory">
+		<div class="cov-email-option-list">
 
-			<div class="cov-mandatory-header">
+			<?php
+			$this->render_email_toggle(
+				'notify_merchant',
+				__( 'New Order Awaiting Verification', 'cod-verify-for-woocommerce' ),
+				__( 'Sent when a new Cash on Delivery order is placed and is awaiting customer verification.', 'cod-verify-for-woocommerce' )
+			);
 
-				<span class="dashicons dashicons-info"></span>
+			$this->render_email_toggle(
+				'merchant_order_confirmed',
+				__( 'New COD Order Confirmed', 'cod-verify-for-woocommerce' ),
+				__( 'Sent when the customer successfully verifies their COD order.', 'cod-verify-for-woocommerce' )
+			);
 
-				<strong>
-					<?php esc_html_e( 'The following emails are always sent to the store owner and cannot be disabled.', 'cod-verify-for-woocommerce' ); ?>
-				</strong>
-
-			</div>
-
-			<ul>
-
-				<li>
-					<span class="dashicons dashicons-yes"></span>
-
-					<span>
-						<strong>
-							<?php esc_html_e( 'New COD Order Confirmed', 'cod-verify-for-woocommerce' ); ?>
-						</strong>
-
-						<?php
-						esc_html_e(
-							' – Sent when the customer successfully verifies their COD order.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</span>
-				</li>
-
-				<li>
-					<span class="dashicons dashicons-yes"></span>
-
-					<span>
-						<strong>
-							<?php esc_html_e( 'COD Order Cancelled', 'cod-verify-for-woocommerce' ); ?>
-						</strong>
-
-						<?php
-						esc_html_e(
-							' – Sent when a COD order is automatically cancelled due to non-verification.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</span>
-				</li>
-
-			</ul>
+			$this->render_email_toggle(
+				'merchant_order_cancelled',
+				__( 'COD Order Cancelled', 'cod-verify-for-woocommerce' ),
+				__( 'Sent when a COD order is automatically cancelled due to non-verification.', 'cod-verify-for-woocommerce' )
+			);
+			?>
 
 		</div>
 
@@ -498,7 +418,10 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 	}
 
 	/**
-	 * Render mandatory customer notifications.
+	 * Render every customer notification option as one uniform list:
+	 * the mandatory verification email (shown checked and disabled,
+	 * not a separately styled box) plus the two genuinely optional
+	 * order-outcome emails.
 	 *
 	 * @return void
 	 */
@@ -506,87 +429,121 @@ class COV_Settings_General implements COV_Settings_Tab_Interface {
 
 		?>
 
-		<div class="cov-customer-notification-list">
+		<div class="cov-email-option-list">
 
-			<div class="cov-customer-notification-item">
+			<?php
+			$this->render_email_toggle(
+				'customer_verification',
+				__( 'Customer Verification Email', 'cod-verify-for-woocommerce' ),
+				__( 'Sent immediately after a Cash on Delivery order is placed. Contains the secure verification link.', 'cod-verify-for-woocommerce' ),
+				true,
+				__( 'Always sent', 'cod-verify-for-woocommerce' )
+			);
 
-				<span class="dashicons dashicons-yes"></span>
+			$this->render_email_toggle(
+				'customer_order_confirmed',
+				__( 'Customer Order Confirmed Email', 'cod-verify-for-woocommerce' ),
+				__( 'Sent after the customer successfully verifies their COD order.', 'cod-verify-for-woocommerce' )
+			);
 
-				<div>
-					<strong>
-						<?php esc_html_e( 'Customer Verification Email', 'cod-verify-for-woocommerce' ); ?>
-					</strong>
-
-					<p>
-						<?php
-						esc_html_e(
-							'Sent immediately after a Cash on Delivery order is placed. Contains the secure verification link.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</p>
-				</div>
-
-			</div>
-
-			<div class="cov-customer-notification-item">
-
-				<span class="dashicons dashicons-yes"></span>
-
-				<div>
-					<strong>
-						<?php esc_html_e( 'Customer Order Confirmed Email', 'cod-verify-for-woocommerce' ); ?>
-					</strong>
-
-					<p>
-						<?php
-						esc_html_e(
-							'Sent after the customer successfully verifies their COD order.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</p>
-				</div>
-
-			</div>
-
-			<div class="cov-customer-notification-item">
-
-				<span class="dashicons dashicons-yes"></span>
-
-				<div>
-					<strong>
-						<?php esc_html_e( 'Customer Order Cancelled Email', 'cod-verify-for-woocommerce' ); ?>
-					</strong>
-
-					<p>
-						<?php
-						esc_html_e(
-							'Sent if the customer does not verify the order before the verification timeout.',
-							'cod-verify-for-woocommerce'
-						);
-						?>
-					</p>
-				</div>
-
-			</div>
+			$this->render_email_toggle(
+				'customer_order_cancelled',
+				__( 'Customer Order Cancelled Email', 'cod-verify-for-woocommerce' ),
+				__( 'Sent if the customer does not verify the order before the verification timeout.', 'cod-verify-for-woocommerce' )
+			);
+			?>
 
 		</div>
 
-		<div class="cov-customer-mandatory-note">
+		<?php
+	}
 
-			<span class="dashicons dashicons-info"></span>
+	/**
+	 * Render a single email on/off row.
+	 *
+	 * Every notification email — mandatory or optional — uses this
+	 * same row so the whole list reads as one consistent set of
+	 * options, with the checkbox itself as the visual focus rather
+	 * than differently colored boxes per email. A mandatory row is
+	 * rendered checked and disabled with a small "Always sent" badge,
+	 * instead of a separate visual treatment.
+	 *
+	 * @param string $key         Settings array key. Ignored (no
+	 *                            name/value submitted) when $disabled
+	 *                            is true, since a disabled email has
+	 *                            no corresponding setting to save.
+	 * @param string $label       Row label.
+	 * @param string $description Short description shown under the label.
+	 * @param bool   $disabled    Whether this row is a locked, always-on row.
+	 * @param string $badge       Optional small badge text (e.g. "Always sent").
+	 *
+	 * @return void
+	 */
+	private function render_email_toggle(
+		string $key,
+		string $label,
+		string $description,
+		bool $disabled = false,
+		string $badge = ''
+	): void {
 
-			<strong>
-				<?php
-				esc_html_e(
-					'These customer emails are mandatory and cannot be disabled to ensure a smooth verification experience.',
-					'cod-verify-for-woocommerce'
-				);
-				?>
-			</strong>
+		$general = $this->get_settings();
 
-		</div>
+		$is_checked = $disabled ? true : ! empty( $general[ $key ] );
+
+		$row_class = 'cov-email-option';
+
+		if ( $disabled ) {
+			$row_class .= ' cov-email-option-disabled';
+		}
+
+		?>
+
+		<label class="<?php echo esc_attr( $row_class ); ?>">
+
+			<?php if ( ! $disabled ) : ?>
+
+				<input
+					type="hidden"
+					name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[<?php echo esc_attr( $key ); ?>]"
+					value="0"
+				/>
+
+			<?php endif; ?>
+
+			<input
+				type="checkbox"
+				<?php if ( ! $disabled ) : ?>
+					name="<?php echo esc_attr( COV_Helper::OPTION_GENERAL_SETTINGS ); ?>[<?php echo esc_attr( $key ); ?>]"
+				<?php endif; ?>
+				value="1"
+				<?php checked( $is_checked ); ?>
+				<?php disabled( $disabled ); ?>
+			/>
+
+			<span class="cov-email-option-content">
+
+				<span class="cov-email-option-title-row">
+
+					<strong>
+						<?php echo esc_html( $label ); ?>
+					</strong>
+
+					<?php if ( $badge ) : ?>
+						<span class="cov-email-option-badge">
+							<?php echo esc_html( $badge ); ?>
+						</span>
+					<?php endif; ?>
+
+				</span>
+
+				<p>
+					<?php echo esc_html( $description ); ?>
+				</p>
+
+			</span>
+
+		</label>
 
 		<?php
 	}

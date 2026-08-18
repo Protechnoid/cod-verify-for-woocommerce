@@ -37,6 +37,12 @@ class COV_Emails {
 	/**
 	 * Trigger the customer confirmation email.
 	 *
+	 * Always fires unconditionally - this is the mandatory email
+	 * carrying the verification link, with no plugin setting to
+	 * disable it. See COV_Email_Confirmation::is_enabled(), which is
+	 * also hardcoded to true so WooCommerce's native per-email toggle
+	 * can't disable it either.
+	 *
 	 * @param WC_Order $order WooCommerce order object.
 	 *
 	 * @return void
@@ -83,31 +89,46 @@ class COV_Emails {
 	/**
 	 * Trigger order confirmed emails.
 	 *
+	 * Customer and merchant recipients are gated independently, so a
+	 * merchant can keep their own confirmation email on while turning
+	 * off the customer's, or vice versa.
+	 *
 	 * @param WC_Order $order WooCommerce order object.
 	 *
 	 * @return void
 	 */
 	public function trigger_order_confirmed_emails( WC_Order $order ): void {
 
+		$settings = COV_Helper::get_general_settings();
+
 		$mailer = WC()->mailer();
 
 		$emails = $mailer->get_emails();
 
-		$customer_email = $emails['COV_Email_Customer_Order_Confirmed'] ?? null;
+		if ( ! empty( $settings['customer_order_confirmed'] ) ) {
 
-		if ( $customer_email instanceof COV_Email_Customer_Order_Confirmed ) {
-			$customer_email->trigger( $order );
+			$customer_email = $emails['COV_Email_Customer_Order_Confirmed'] ?? null;
+
+			if ( $customer_email instanceof COV_Email_Customer_Order_Confirmed ) {
+				$customer_email->trigger( $order );
+			}
 		}
 
-		$merchant_email = $emails['COV_Email_Merchant_Order_Confirmed'] ?? null;
+		if ( ! empty( $settings['merchant_order_confirmed'] ) ) {
 
-		if ( $merchant_email instanceof COV_Email_Merchant_Order_Confirmed ) {
-			$merchant_email->trigger( $order );
+			$merchant_email = $emails['COV_Email_Merchant_Order_Confirmed'] ?? null;
+
+			if ( $merchant_email instanceof COV_Email_Merchant_Order_Confirmed ) {
+				$merchant_email->trigger( $order );
+			}
 		}
 	}
 
 	/**
 	 * Trigger order cancelled emails.
+	 *
+	 * Customer and merchant recipients are gated independently, same
+	 * reasoning as trigger_order_confirmed_emails().
 	 *
 	 * @param WC_Order $order WooCommerce order object.
 	 *
@@ -115,20 +136,28 @@ class COV_Emails {
 	 */
 	public function trigger_order_cancelled_emails( WC_Order $order ): void {
 
+		$settings = COV_Helper::get_general_settings();
+
 		$mailer = WC()->mailer();
 
 		$emails = $mailer->get_emails();
 
-		$customer_email = $emails['COV_Email_Customer_Order_Cancelled'] ?? null;
+		if ( ! empty( $settings['customer_order_cancelled'] ) ) {
 
-		if ( $customer_email instanceof COV_Email_Customer_Order_Cancelled ) {
-			$customer_email->trigger( $order );
+			$customer_email = $emails['COV_Email_Customer_Order_Cancelled'] ?? null;
+
+			if ( $customer_email instanceof COV_Email_Customer_Order_Cancelled ) {
+				$customer_email->trigger( $order );
+			}
 		}
 
-		$merchant_email = $emails['COV_Email_Merchant_Order_Cancelled'] ?? null;
+		if ( ! empty( $settings['merchant_order_cancelled'] ) ) {
 
-		if ( $merchant_email instanceof COV_Email_Merchant_Order_Cancelled ) {
-			$merchant_email->trigger( $order );
+			$merchant_email = $emails['COV_Email_Merchant_Order_Cancelled'] ?? null;
+
+			if ( $merchant_email instanceof COV_Email_Merchant_Order_Cancelled ) {
+				$merchant_email->trigger( $order );
+			}
 		}
 	}
 }
