@@ -78,7 +78,11 @@ Yes. The verification page sends no-cache headers and is excluded from search en
 
 = What happens to plugin data when I uninstall the plugin? =
 
-[FILL IN: describe here exactly what your uninstall.php or uninstall routine does — e.g. whether order meta, custom order status registrations, and plugin settings are removed on uninstall, or left in place. This needs to match your actual uninstall behavior once you build it.]
+When you delete the plugin from the Plugins screen, its settings are removed automatically. Any order still sitting in **Pending Confirmation** is moved to **On-hold** first (with an order note explaining why), so it doesn't get stuck pointing at a status that no longer exists. Any pending auto-cancel schedules are cleared. Order-level data the plugin added (verification timestamps, confirmation method, etc.) is left in place on your existing orders — it's historical information about those orders, not plugin configuration, and isn't removed.
+
+== Support ==
+
+For help with COD Verify for WooCommerce, please use the [WordPress.org support forum](https://wordpress.org/support/plugin/cod-verify-for-woocommerce/) for this plugin, or email support@protechnoid.com directly.
 
 == Screenshots ==
 
