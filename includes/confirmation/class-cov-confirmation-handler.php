@@ -37,7 +37,7 @@ class COV_Confirmation_Handler {
 	/**
 	 * Constructor.
 	 *
-	 * @param COV_Token_Manager    $token_manager     Token manager instance.
+	 * @param COV_Token_Manager     $token_manager     Token manager instance.
 	 * @param COV_Order_Auto_Cancel $order_auto_cancel Order auto cancel instance.
 	 */
 	public function __construct(
@@ -66,13 +66,20 @@ class COV_Confirmation_Handler {
 		}
 
 		// Only process verification URLs.
+		//
+		// These are public customer-facing verification URLs, so a
+		// WordPress nonce is not applicable. The secure verification
+		// token provides authentication for the request.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public verification URL uses the secure order token instead of a WordPress nonce.
 		if ( ! isset( $_GET['cov_order_id'], $_GET['cov_token'] ) ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public verification URL uses the secure order token instead of a WordPress nonce.
 		$order_id = absint( $_GET['cov_order_id'] );
 
 		$token = sanitize_text_field(
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public verification URL uses the secure order token instead of a WordPress nonce.
 			wp_unslash( $_GET['cov_token'] )
 		);
 

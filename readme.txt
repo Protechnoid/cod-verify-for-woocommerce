@@ -2,7 +2,7 @@
 Contributors: protechnoid
 Tags: cash on delivery, cod, order verification, woocommerce, fraud prevention
 Requires at least: 6.8
-Tested up to: 6.8
+Tested up to: 7.1
 Requires PHP: 8.0
 Stable tag: 1.0.0
 Requires Plugins: woocommerce

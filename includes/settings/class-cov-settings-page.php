@@ -35,8 +35,10 @@ class COV_Settings_Page {
 
 	/**
 	 * Register the plugin settings page.
+	 *
+	 * @return void
 	 */
-	public function register_admin_menu() {
+	public function register_admin_menu(): void {
 
 		add_menu_page(
 			__( 'COD Verify Settings', 'cod-verify-for-woocommerce' ),
@@ -51,8 +53,10 @@ class COV_Settings_Page {
 
 	/**
 	 * Render the settings page.
+	 *
+	 * @return void
 	 */
-	public function render_settings_page() {
+	public function render_settings_page(): void {
 		?>
 
 		<div class="wrap">
@@ -89,10 +93,12 @@ class COV_Settings_Page {
 	 */
 	private function render_admin_notices(): void {
 
-		if (
-			isset( $_GET['saved'] ) &&
-			'1' === sanitize_text_field( wp_unslash( $_GET['saved'] ) )
-		) {
+		// Read-only redirect indicator. It does not perform a state-changing
+		// action, so WordPress nonce verification is not applicable.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only redirect indicator; no state-changing action is performed.
+		$saved = isset( $_GET['saved'] ) ? sanitize_text_field( wp_unslash( $_GET['saved'] ) ) : '';
+
+		if ( '1' === $saved ) {
 			?>
 
 			<div class="notice notice-success is-dismissible">
@@ -140,8 +146,13 @@ class COV_Settings_Page {
 	 */
 	private function get_active_tab(): string {
 
-		return isset( $_GET['tab'] )
-			? sanitize_key( wp_unslash( $_GET['tab'] ) )
+		// Read-only navigation parameter. It does not perform a state-changing
+		// action, so WordPress nonce verification is not applicable.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation parameter; no state-changing action is performed.
+		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
+
+		return '' !== $tab
+			? $tab
 			: COV_Helper::SETTINGS_GENERAL;
 	}
 
