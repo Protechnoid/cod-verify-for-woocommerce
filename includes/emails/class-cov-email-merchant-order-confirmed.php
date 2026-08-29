@@ -60,19 +60,19 @@ class COV_Email_Merchant_Order_Confirmed extends WC_Email {
 			return;
 		}
 
-		$this->object    = $order;
+		$this->object = $order;
 
-        $mailer = WC()->mailer();
+		$mailer = WC()->mailer();
 
-        $emails = $mailer->get_emails();
+		$emails = $mailer->get_emails();
 
-        $new_order_email = $emails['WC_Email_New_Order'] ?? null;
+		$new_order_email = $emails['WC_Email_New_Order'] ?? null;
 
-        if ( $new_order_email instanceof WC_Email_New_Order ) {
-            $this->recipient = $new_order_email->get_recipient();
-        } else {
-            $this->recipient = get_option( 'admin_email' );
-        }
+		if ( $new_order_email instanceof WC_Email_New_Order ) {
+			$this->recipient = $new_order_email->get_recipient();
+		} else {
+			$this->recipient = get_option( 'admin_email' );
+		}
 
 		$this->placeholders = array(
 			'{customer_name}' => $order->get_billing_first_name(),

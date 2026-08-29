@@ -6,7 +6,9 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-
+/**
+ * Email module.
+ */
 class COV_Emails {
 
 	/**
@@ -24,12 +26,12 @@ class COV_Emails {
 		require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-email-customer-order-cancelled.php';
 		require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-email-merchant-order-cancelled.php';
 
-		$emails['COV_Email_Confirmation'] = new COV_Email_Confirmation();
-		$emails['COV_Email_Customer_Order_Confirmed'] = new COV_Email_Customer_Order_Confirmed();
-		$emails['COV_Email_Merchant_Order_Confirmed'] = new COV_Email_Merchant_Order_Confirmed();
+		$emails['COV_Email_Confirmation']                   = new COV_Email_Confirmation();
+		$emails['COV_Email_Customer_Order_Confirmed']       = new COV_Email_Customer_Order_Confirmed();
+		$emails['COV_Email_Merchant_Order_Confirmed']       = new COV_Email_Merchant_Order_Confirmed();
 		$emails['COV_Email_Merchant_Awaiting_Confirmation'] = new COV_Email_Merchant_Awaiting_Confirmation();
-		$emails['COV_Email_Customer_Order_Cancelled'] = new COV_Email_Customer_Order_Cancelled();
-		$emails['COV_Email_Merchant_Order_Cancelled'] = new COV_Email_Merchant_Order_Cancelled();
+		$emails['COV_Email_Customer_Order_Cancelled']       = new COV_Email_Customer_Order_Cancelled();
+		$emails['COV_Email_Merchant_Order_Cancelled']       = new COV_Email_Merchant_Order_Cancelled();
 
 		return $emails;
 	}

@@ -2,6 +2,8 @@
 /**
  * Merchant Awaiting Confirmation Email.
  *
+ * @package COD_Verify_For_WooCommerce
+ *
  * @var WC_Order $order
  * @var string   $email_heading
  * @var WC_Email $email

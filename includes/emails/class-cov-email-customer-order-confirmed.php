@@ -123,9 +123,9 @@ class COV_Email_Customer_Order_Confirmed extends WC_Email {
 	protected function get_template_args(): array {
 
 		return array(
-			'order'        => $this->object,
+			'order'         => $this->object,
 			'email_heading' => $this->get_heading(),
-			'email'        => $this,
+			'email'         => $this,
 		);
 	}
 

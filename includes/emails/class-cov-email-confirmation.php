@@ -123,10 +123,10 @@ class COV_Email_Confirmation extends WC_Email {
 	protected function get_template_args(): array {
 
 		return array(
-			'order'           => $this->object,
-			'email_heading'   => $this->get_heading(),
+			'order'            => $this->object,
+			'email_heading'    => $this->get_heading(),
 			'confirmation_url' => COV_Link_Manager::get_confirmation_url( $this->object ),
-			'email'           => $this,
+			'email'            => $this,
 		);
 	}
 

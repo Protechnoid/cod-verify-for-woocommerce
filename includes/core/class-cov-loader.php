@@ -55,11 +55,11 @@ class COV_Loader {
 	/**
 	 * Registers an action hook.
 	 *
-	 * @param string   $hook          Hook name.
-	 * @param object   $component     Class instance.
-	 * @param string   $callback      Method name.
-	 * @param int      $priority      Hook priority.
-	 * @param int      $accepted_args Number of accepted arguments.
+	 * @param string $hook          Hook name.
+	 * @param object $component     Class instance.
+	 * @param string $callback      Method name.
+	 * @param int    $priority      Hook priority.
+	 * @param int    $accepted_args Number of accepted arguments.
 	 *
 	 * @return void
 	 */
@@ -83,11 +83,11 @@ class COV_Loader {
 	/**
 	 * Registers a filter hook.
 	 *
-	 * @param string   $hook          Hook name.
-	 * @param object   $component     Class instance.
-	 * @param string   $callback      Method name.
-	 * @param int      $priority      Hook priority.
-	 * @param int      $accepted_args Number of accepted arguments.
+	 * @param string $hook          Hook name.
+	 * @param object $component     Class instance.
+	 * @param string $callback      Method name.
+	 * @param int    $priority      Hook priority.
+	 * @param int    $accepted_args Number of accepted arguments.
 	 *
 	 * @return void
 	 */

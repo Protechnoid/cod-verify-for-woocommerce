@@ -7,6 +7,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Merchant Order Cancelled Email.
+ */
 class COV_Email_Merchant_Order_Cancelled extends WC_Email {
 
 	/**

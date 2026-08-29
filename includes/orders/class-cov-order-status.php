@@ -1,7 +1,7 @@
 <?php
 /**
  * Order Status class
- * 
+ *
  * @package COD_Verify_For_WooCommerce
  */
 
@@ -12,55 +12,51 @@ defined( 'ABSPATH' ) || exit;
  */
 class COV_Order_Status {
 
-    /**
-     * Registers the Pending Confirmation order status.
-     */
-    public function register_order_status() {
+	/**
+	 * Registers the Pending Confirmation order status.
+	 */
+	public function register_order_status() {
 
-        register_post_status(
-            'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM,
-            array(
-                'label'                     => __( 'Pending Confirmation', 'cod-verify-for-woocommerce' ),
-                'public'                    => false,
-                'exclude_from_search'       => false,
-                'show_in_admin_all_list'    => true,
-                'show_in_admin_status_list' => true,
-                /* translators: %s: Number of orders with this status. */
-                'label_count' => _n_noop(
-                    'Pending Confirmation <span class="count">(%s)</span>',
-                    'Pending Confirmation <span class="count">(%s)</span>',
-                    'cod-verify-for-woocommerce'
-                ),
-            ) 
-        );
+		register_post_status(
+			'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM,
+			array(
+				'label'                     => __( 'Pending Confirmation', 'cod-verify-for-woocommerce' ),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				/* translators: %s: Number of orders with this status. */
+				'label_count'               => _n_noop(
+					'Pending Confirmation <span class="count">(%s)</span>',
+					'Pending Confirmation <span class="count">(%s)</span>',
+					'cod-verify-for-woocommerce'
+				),
+			)
+		);
+	}
 
-    }
+	/**
+	 * Adds the custom order status to WooCommerce.
+	 *
+	 * @param array $order_statuses Existing WooCommerce order statuses.
+	 * @return array Modified order statuses.
+	 */
+	public function add_order_status( $order_statuses ) {
 
-    /**
-     * Adds the custom order status to WooCommerce.
-     *
-     * @param array $order_statuses Existing WooCommerce order statuses.
-     * @return array Modified order statuses.
-     */
+		$modified_order_statuses = array();
 
-    public function add_order_status( $order_statuses ) {
+		foreach ( $order_statuses as $status_key => $status_label ) {
 
-        $modified_order_statuses = array();
+			$modified_order_statuses[ $status_key ] = $status_label;
 
-        foreach ( $order_statuses as $status_key => $status_label ) {
-            
-            $modified_order_statuses[ $status_key ] = $status_label;
-            
-            if ( 'wc-pending' === $status_key ) {
-                $modified_order_statuses[ 'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM ] = __( 
-                    'Pending Confirmation', 
-                    'cod-verify-for-woocommerce' 
-                );
-            }
-    
-        }
+			if ( 'wc-pending' === $status_key ) {
+				$modified_order_statuses[ 'wc-' . COV_Helper::ORDER_STATUS_PENDING_CONFIRM ] = __(
+					'Pending Confirmation',
+					'cod-verify-for-woocommerce'
+				);
+			}
+		}
 
-        return $modified_order_statuses;
-    }
-
+		return $modified_order_statuses;
+	}
 }

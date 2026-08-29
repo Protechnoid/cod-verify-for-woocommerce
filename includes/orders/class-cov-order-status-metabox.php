@@ -141,7 +141,7 @@ class COV_Order_Status_Metabox {
 
 		if ( $expires_at ) {
 
-			$now = current_time( 'timestamp', true );
+			$now = time();
 
 			if ( $expires_at > $now ) {
 

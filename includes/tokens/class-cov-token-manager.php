@@ -91,7 +91,7 @@ class COV_Token_Manager {
 	 */
 	public function is_token_expired( WC_Order $order ): bool {
 
-		return current_time( 'timestamp', true ) >= $this->get_token_expiration( $order );
+		return time() >= $this->get_token_expiration( $order );
 	}
 
 	/**
