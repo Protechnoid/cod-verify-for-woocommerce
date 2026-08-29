@@ -55,5 +55,4 @@ class COV_Settings {
 
 		$this->page->register_admin_menu();
 	}
-
 }

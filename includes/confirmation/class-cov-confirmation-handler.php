@@ -125,7 +125,7 @@ class COV_Confirmation_Handler {
 		// Store the confirmation timestamp.
 		$order->update_meta_data(
 			COV_Helper::META_CONFIRMED_AT,
-			current_time( 'timestamp', true )
+			time()
 		);
 
 		$order->update_meta_data(
@@ -269,7 +269,7 @@ class COV_Confirmation_Handler {
 	/**
 	 * Render confirmation status template.
 	 *
-	 * @param string       $status Confirmation status.
+	 * @param string        $status Confirmation status.
 	 * @param WC_Order|null $order  Order object.
 	 *
 	 * @return void

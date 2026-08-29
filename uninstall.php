@@ -50,7 +50,7 @@ if ( ! function_exists( 'wc_get_orders' ) ) {
  * Paginated in batches of 50 to avoid memory/timeout issues on
  * stores with many affected orders.
  */
-$page = 1;
+$cov_page = 1;
 
 do {
 
@@ -58,7 +58,7 @@ do {
 		array(
 			'status'   => 'wc-pending-confirm',
 			'limit'    => 50,
-			'page'     => $page,
+			'page'     => $cov_page,
 			'paginate' => false,
 			'return'   => 'objects',
 		)
@@ -68,30 +68,32 @@ do {
 		break;
 	}
 
-    foreach ( $orders as $order ) {
+	foreach ( $orders as $cov_order ) {
 
-        // set_status() + save() is used instead of update_status()
-        // here deliberately - update_status() auto-generates its own
-        // "Order status changed from X to Y" note text using
-        // wc_get_order_status_name(), which can't find a label for
-        // Pending Confirmation in this context (this plugin's status
-        // registration doesn't run during uninstall.php), producing a
-        // misleading fallback label. Setting the status directly and
-        // adding our own note avoids that lookup entirely.
-        $order->set_status( 'on-hold' );
-        $order->save();
+		// set_status() + save() is used instead of update_status()
+		// here deliberately - update_status() auto-generates its own
+		// "Order status changed from X to Y" note text using
+		// wc_get_order_status_name(), which can't find a label for
+		// Pending Confirmation in this context (this plugin's status
+		// registration doesn't run during uninstall.php), producing a
+		// misleading fallback label. Setting the status directly and
+		// adding our own note avoids that lookup entirely.
+		$cov_order->set_status( 'on-hold' );
+		$cov_order->save();
 
-        $order->add_order_note(
-            __(
-                'Order automatically moved out of Pending Confirmation to On-hold because the COD Verify for WooCommerce plugin was uninstalled. Please review this order manually.',
-                'cod-verify-for-woocommerce'
-            )
-        );
-    }
+		$cov_order->add_order_note(
+			__(
+				'Order automatically moved out of Pending Confirmation to On-hold because the COD Verify for WooCommerce plugin was uninstalled. Please review this order manually.',
+				'cod-verify-for-woocommerce'
+			)
+		);
+	}
 
-	++$page;
+	$order_count = count( $orders );
 
-} while ( count( $orders ) === 50 );
+	++$cov_page;
+
+} while ( 50 === $order_count );
 
 /**
  * Remove any remaining scheduled Action Scheduler jobs for the

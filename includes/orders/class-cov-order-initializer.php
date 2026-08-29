@@ -164,7 +164,7 @@ class COV_Order_Initializer {
 
 		$this->token_manager->reset_token_used( $order );
 
-		$expires_at = current_time( 'timestamp', true ) + COV_Helper::get_token_lifetime();
+		$expires_at = time() + COV_Helper::get_token_lifetime();
 
 		$this->token_manager->store_token_expiration( $order, $expires_at );
 

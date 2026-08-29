@@ -7,6 +7,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Merchant Awaiting Confirmation Email.
+ */
 class COV_Email_Merchant_Awaiting_Confirmation extends WC_Email {
 
 	/**

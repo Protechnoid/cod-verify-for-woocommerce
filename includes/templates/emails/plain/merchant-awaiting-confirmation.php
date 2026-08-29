@@ -2,6 +2,8 @@
 /**
  * Merchant Awaiting Confirmation Email - Plain Text.
  *
+ * @package COD_Verify_For_WooCommerce
+ *
  * @var WC_Order $order
  * @var string   $email_heading
  * @var WC_Email $email
@@ -38,4 +40,3 @@ printf(
 do_action( 'woocommerce_email_order_details', $order, false, true, $email );
 do_action( 'woocommerce_email_order_meta', $order, false, true, $email );
 do_action( 'woocommerce_email_customer_details', $order, false, true, $email );
-?>

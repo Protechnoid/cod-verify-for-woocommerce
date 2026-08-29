@@ -33,24 +33,30 @@ do_action( 'woocommerce_email_header', $email_heading, $email );
 </p>
 
 <p>
-	<?php esc_html_e(
+	<?php
+	esc_html_e(
 		'Thank you for your order.',
 		'cod-verify-for-woocommerce'
-	); ?>
+	);
+	?>
 </p>
 
 <p>
-	<?php esc_html_e(
+	<?php
+	esc_html_e(
 		'Before we can process your Cash on Delivery order, we need to verify it.',
 		'cod-verify-for-woocommerce'
-	); ?>
+	);
+	?>
 </p>
 
 <p>
-	<?php esc_html_e(
+	<?php
+	esc_html_e(
 		'Please click the button below to confirm your order.',
 		'cod-verify-for-woocommerce'
-	); ?>
+	);
+	?>
 </p>
 
 <?php
@@ -91,7 +97,7 @@ $button_text = apply_filters(
 			),
 			esc_html( COV_Helper::get_token_lifetime_label() )
 		);
-	?>
+		?>
 
 </p>
 

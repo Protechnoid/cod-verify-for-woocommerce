@@ -22,12 +22,12 @@ class COV_Helper {
 	/**
 	 * Order meta keys.
 	 */
-	const META_TOKEN          = '_cov_token';
-	const META_TOKEN_EXPIRES  = '_cov_token_expires';
-	const META_TOKEN_USED     = '_cov_token_used';
-	const META_CONFIRMED_AT   = '_cov_confirmed_at';
-	const META_CONFIRMED_VIA  = '_cov_confirmed_via';
-	const META_CANCELLED_VIA  = '_cov_cancelled_via';
+	const META_TOKEN         = '_cov_token';
+	const META_TOKEN_EXPIRES = '_cov_token_expires';
+	const META_TOKEN_USED    = '_cov_token_used';
+	const META_CONFIRMED_AT  = '_cov_confirmed_at';
+	const META_CONFIRMED_VIA = '_cov_confirmed_via';
+	const META_CANCELLED_VIA = '_cov_cancelled_via';
 
 	/**
 	 * Action Scheduler hook names.
@@ -154,7 +154,7 @@ class COV_Helper {
 				$value,
 				'cod-verify-for-woocommerce'
 			),
-			self::TIMEOUT_HOURS => _n(
+			self::TIMEOUT_HOURS   => _n(
 				'hour',
 				'hours',
 				$value,

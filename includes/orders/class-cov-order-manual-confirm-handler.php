@@ -115,7 +115,7 @@ class COV_Order_Manual_Confirm_Handler {
 
 		$order->update_meta_data(
 			COV_Helper::META_CONFIRMED_AT,
-			current_time( 'timestamp', true )
+			time()
 		);
 
 		$order->update_meta_data(

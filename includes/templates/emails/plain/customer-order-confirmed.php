@@ -2,6 +2,8 @@
 /**
  * Customer Order Confirmed Email - Plain Text.
  *
+ * @package COD_Verify_For_WooCommerce
+ *
  * @var WC_Order $order
  * @var string   $email_heading
  * @var WC_Email $email
@@ -47,4 +49,5 @@ do_action( 'woocommerce_email_customer_details', $order, false, true, $email );
 ?>
 
 
-<?php esc_html_e( 'Thank you for shopping with us.', 'cod-verify-for-woocommerce' ); ?>
+<?php
+esc_html_e( 'Thank you for shopping with us.', 'cod-verify-for-woocommerce' );
