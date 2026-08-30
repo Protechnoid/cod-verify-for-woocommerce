@@ -15,14 +15,9 @@ class COV_Deactivator {
 	/**
 	 * Deactivate the plugin.
 	 *
-	 * Unschedules the auto-cancel action for every order currently in
-	 * Pending Confirmation. This prevents orphaned Action Scheduler
-	 * actions from firing (as a no-op, since no callback will be
-	 * registered) while the plugin is inactive.
-	 *
-	 * Orders left in Pending Confirmation are NOT touched otherwise —
-	 * their stored token and expiration remain intact so activation can
-	 * restore the original schedule without resetting the deadline.
+	 * Moves every order currently in Pending Confirmation to On hold
+	 * and unschedules its auto-cancel action. The existing order status
+	 * transition logic handles the associated COD Verify cleanup.
 	 *
 	 * @return void
 	 */
@@ -46,6 +41,17 @@ class COV_Deactivator {
 				COV_Helper::ACTION_CANCEL_ORDER,
 				array( (int) $order_id ),
 				COV_Helper::ACTION_GROUP
+			);
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order instanceof WC_Order ) {
+				continue;
+			}
+
+			$order->update_status(
+				'on-hold',
+				__( 'COD Verify was deactivated. The order was moved from Pending Confirmation to On hold.', 'cod-verify-for-woocommerce' )
 			);
 		}
 	}
