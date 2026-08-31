@@ -170,10 +170,9 @@ class COV_Order_Status_Metabox {
 	 * Render the "not confirmed via verification" state.
 	 *
 	 * Distinguishes the plugin's own auto-cancel timeout (a specific,
-	 * known outcome) from a genuinely external/manual status change
-	 * that bypassed verification (cancelled some other way, or moved
-	 * straight to another status like Processing without the customer
-	 * ever confirming).
+	 * known outcome) from an order that left Pending Confirmation
+	 * without customer verification, either through a manual status
+	 * change or because COD Verify was deactivated.
 	 *
 	 * @param WC_Order $order Order object.
 	 *
@@ -191,6 +190,6 @@ class COV_Order_Status_Metabox {
 		}
 
 		echo '<p style="margin-top:0;"><strong>' . esc_html__( 'Not confirmed via verification', 'cod-verify-for-woocommerce' ) . '</strong></p>';
-		echo '<p style="color:#666;">' . esc_html__( 'This order left Pending Confirmation without being verified — status changed externally, or verification was never completed.', 'cod-verify-for-woocommerce' ) . '</p>';
+		echo '<p style="color:#666;">' . esc_html__( 'This order left Pending Confirmation without being verified. It may have been moved to another status manually or because COD Verify was deactivated.', 'cod-verify-for-woocommerce' ) . '</p>';
 	}
 }
