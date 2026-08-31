@@ -17,6 +17,7 @@ require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-initializer.php'
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-resend-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-manual-confirm-handler.php';
 require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-status-metabox.php';
+require_once COV_PLUGIN_PATH . 'includes/orders/class-cov-order-confirmation-notice.php';
 require_once COV_PLUGIN_PATH . 'includes/links/class-cov-link-manager.php';
 require_once COV_PLUGIN_PATH . 'includes/emails/class-cov-emails.php';
 require_once COV_PLUGIN_PATH . 'includes/settings/class-cov-settings.php';
@@ -163,6 +164,15 @@ class COV_Plugin {
 			'add_meta_boxes',
 			$order_status_metabox,
 			'register_metabox'
+		);
+
+		$order_confirmation_notice = new COV_Order_Confirmation_Notice();
+
+		$this->loader->add_action(
+			'woocommerce_before_thankyou',
+			$order_confirmation_notice,
+			'render_notice',
+			10
 		);
 
 		$settings = new COV_Settings();
